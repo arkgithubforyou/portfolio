@@ -1,0 +1,103 @@
+---
+const publications = [
+  {
+    authors: "F Zhai, V Demberg, and A Koller",
+    year: "2022",
+    title: "Zero-shot Script Parsing",
+    venue: "Proceedings of the 29th International Conference on Computational Linguistics",
+    url: "https://aclanthology.org/2022.coling-1.356",
+    tags: ["Zero-shot Learning", "Representation Learning", "XLNet/GPT/LLM", "Commonsense Knowledge", "Metric Design"],
+  },
+  {
+    authors: "D Zhu, MA Hedderich, F Zhai, DI Adelani, D Klakow",
+    year: "2022",
+    title: "Task-Adaptive Pre-Training for Boosting Learning With Noisy Labels: A Study on Text Classification for African Languages",
+    venue: "3rd Workshop on African Natural Language Processing",
+    url: "",
+    tags: ["Noisy Data", "Low Resource Language", "BERT"],
+  },
+  {
+    authors: "D Zhu, MA. Hedderich, F Zhai, D Adelani, and D Klakow",
+    year: "2022",
+    title: "Is BERT Robust to Label Noise? A Study on Learning with Noisy Labels in Text Classification",
+    venue: "Proceedings of the Third Workshop on Insights from Negative Results in NLP",
+    url: "https://aclanthology.org/2022.insights-1.8",
+    tags: ["Noisy Labels", "BERT"],
+  },
+  {
+    authors: "L Donatelli, T Schmidt, D Biswas, A Köhn, F Zhai, and A Koller",
+    year: "2021",
+    title: "Aligning Actions Across Recipe Graphs",
+    venue: "Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing",
+    url: "https://aclanthology.org/2021.emnlp-main.554",
+    tags: ["Crowd-sourcing/Corpus Construction", "Procedural Knowledge"],
+  },
+  {
+    authors: "F Zhai, I Škrjanec, and A Koller",
+    year: "2021",
+    title: "Script Parsing with Hierarchical Sequence Modelling",
+    venue: "Proceedings of *SEM 2021: The Tenth Joint Conference on Lexical and Computational Semantics",
+    url: "https://aclanthology.org/2021.starsem-1.18",
+    tags: ["NLU", "Representation Learning", "Sequence Modelling", "Commonsense Knowledge"],
+  },
+  {
+    authors: "F Zhai, V Demberg, and A Koller",
+    year: "2020",
+    title: "Story Generation with Rich Details",
+    venue: "Proceedings of the 28th International Conference on Computational Linguistics",
+    url: "https://aclanthology.org/2020.coling-main.212",
+    tags: ["Story Generation", "Data to Text", "Human Feedback"],
+  },
+  {
+    authors: "F Zhai, V Demberg, P Shkadzko, W Shi, and A Sayeed",
+    year: "2019",
+    title: "A Hybrid Model for Globally Coherent Story Generation",
+    venue: "Proceedings of the Second Workshop on Storytelling, Association for Computational Linguistics",
+    url: "https://aclanthology.org/W19-3404",
+    tags: ["Story Generation", "Data to Text"],
+  },
+  {
+    authors: "F Zhai, Y Fan, T Verma, R Sinha, D Klakow",
+    year: "2018",
+    title: "A dataset and a novel neural approach for optical Gregg shorthand recognition",
+    venue: "Text, Speech, and Dialogue: 21st International Conference, TSD 2018",
+    url: "",
+    tags: ["Image to Text", "Handwriting Recognition", "Retrieval", "Dataset Construction"],
+  },
+  {
+    authors: "F Zhai, J Szymanik, I Titov",
+    year: "2017",
+    title: "Toward Probabilistic Natural Logic for Syllogistic Reasoning",
+    venue: "the 20th Amsterdam Colloquium, page 468",
+    url: "",
+    tags: ["Human Reasoning", "Graphical Models", "EM"],
+  },
+];
+---
+
+<section id="publications" class="py-10 border-t border-slate-800">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-slate-100 mb-6">Publications</h2>
+
+    <ul class="space-y-4">
+      {publications.map((pub) => (
+        <li class="text-sm">
+          <p class="text-slate-300">
+            {pub.authors}. {pub.year}.{" "}
+            {pub.url ? (
+              <a href={pub.url} target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:underline italic">
+                {pub.title}
+              </a>
+            ) : (
+              <span class="italic">{pub.title}</span>
+            )}.{" "}
+            <span class="text-slate-500">In {pub.venue}.</span>
+          </p>
+          <p class="text-xs text-slate-600 mt-1">
+            {pub.tags.join(" | ")}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

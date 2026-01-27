@@ -1,62 +1,88 @@
 ---
-import ProjectCard from './ProjectCard.astro';
-
 const baseUrl = import.meta.env.BASE_URL;
 
-// ============================================
-// PROJECTS - Edit your projects here
-// ============================================
 const projects = [
   {
     title: "Controlled Story Generation",
-    description: "Multi-task neural architecture for controlled text generation. 34% quality improvement, 90% data reduction through transfer learning. Published at COLING.",
-    tags: ["Text Generation", "PyTorch", "Crowdsourcing"],
-    href: `${baseUrl}projects/story-generation`,
+    tags: "Text generation | Crowd sourcing",
+    description: "Designed and implemented a multi-task neural architecture for controlled text generation. Reduced data requirements by 90% through transfer learning, achieved 34% quality improvement through architectural innovation, and delivered production-ready system (8 tokens/sec, single GPU).",
+    publication: { text: "Published at COLING", url: "https://aclanthology.org/2020.coling-main.212/" },
+    href: `${baseUrl}projects/story-generation/`,
     image: `${baseUrl}images/story0.png`,
   },
   {
     title: "Zero-shot Script Parsing",
-    description: "First zero-shot system for extracting structured knowledge from narratives without scenario-specific training. 68% F1 on unseen scenarios. Published at COLING.",
-    tags: ["Zero-shot Learning", "XLNet/GPT", "Semi-supervised"],
-    href: `${baseUrl}projects/zero-shot-parsing`,
+    tags: "Semi-supervised Learning | LLM | Metric Design",
+    description: "Developed the first zero-shot script parsing system that extracts structured knowledge from narrative texts without scenario-specific training. Achieved 68% F1 on unseen scenarios, matching supervised baselines while generalizing to new domains.",
+    publication: { text: "Published at COLING", url: "https://aclanthology.org/2022.coling-1.356/" },
+    href: `${baseUrl}projects/zero-shot-parsing/`,
     image: `${baseUrl}images/zs1.png`,
   },
   {
     title: "Supervised Script Parsing",
-    description: "Improved SOTA in procedural knowledge extraction by 16+ F1 points. First system to parse both events (85.7% F1) and participants (90.3% F1). Published at *SEM.",
-    tags: ["NLU", "Sequence Labeling", "Back-translation"],
-    href: `${baseUrl}projects/supervised-parsing`,
+    tags: "NLU | Back-translation | Sequence Labeling",
+    description: "Improved state-of-the-art in procedural knowledge extraction by 16+ F1 points through hierarchical sequence modeling. First system to successfully parse both events (85.7% F1) and participants (90.3% F1), enabling applications in conversational AI and automated documentation.",
+    publication: { text: "Published at *SEM 2021", url: "https://aclanthology.org/2021.starsem-1.18/" },
+    href: `${baseUrl}projects/supervised-parsing/`,
     image: `${baseUrl}images/ssp.png`,
   },
   {
     title: "Recipe Alignment",
-    description: "Complete recipe understanding pipeline with 250-participant crowdsourcing experiment. Created first action-level alignment corpus (1,592 alignments). Published at EMNLP.",
-    tags: ["Corpus Construction", "Crowdsourcing", "BERT"],
-    href: `${baseUrl}projects/recipe-alignment`,
+    tags: "Corpus Construction | Crowd Sourcing",
+    description: "Built complete recipe understanding pipeline from raw text to aligned action graphs. Managed crowd sourcing experiment with 250 participants using adaptive quality control, created first action-level recipe alignment corpus (1,592 alignments), and accommodated 72.4% alignment accuracy, a new SOTA.",
+    publication: { text: "Published at EMNLP", url: "https://aclanthology.org/2021.emnlp-main.554/" },
+    href: `${baseUrl}projects/recipe-alignment/`,
     image: `${baseUrl}images/recipe1.png`,
   },
   {
     title: "Gregg Shorthand Recognition",
-    description: "Deep learning system for recognizing English from Gregg shorthand images. Created first large-scale dataset (15K+ words), achieved 58% top-5 accuracy. Published at TSD.",
-    tags: ["Image to Text", "CNN/LSTM", "Retrieval"],
-    href: `${baseUrl}projects/gregg-shorthand`,
+    tags: "Image to text | Retrieval | Hand script recognition",
+    description: "Created a deep learning system for recognizing English words from Gregg shorthand images—a challenging computer vision task where subtle stroke variations encode information. Developed both the first (and still only) large-scale dataset (15K+ words) and a novel three-stage architecture that reformulates recognition as sequence generation plus retrieval, achieving 58% top-5 accuracy.",
+    publication: { text: "Published at TSD", url: "https://link.springer.com/chapter/10.1007/978-3-030-00794-2_24" },
+    href: `${baseUrl}projects/gregg-shorthand/`,
     image: `${baseUrl}images/gregg1.png`,
   },
 ];
 ---
 
-<section id="projects" class="py-20 bg-white">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Featured Projects</h2>
-      <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-        A selection of research projects in NLP and machine learning, published at top venues.
-      </p>
-    </div>
+<section id="projects" class="py-10 border-t border-slate-800">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-slate-100 mb-8">Featured Projects</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="space-y-10">
       {projects.map((project) => (
-        <ProjectCard {...project} />
+        <article class="flex flex-col md:flex-row gap-6">
+          <!-- Text Content -->
+          <div class="flex-1">
+            <h3 class="text-xl font-semibold text-slate-100 mb-1">
+              <a href={project.href} class="hover:text-primary-400 transition-colors">
+                {project.title}
+              </a>
+            </h3>
+            <p class="text-sm text-primary-400 mb-3">{project.tags}</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-3">
+              {project.description}
+              {" "}
+              <a href={project.publication.url} target="_blank" rel="noopener noreferrer" class="text-primary-400 hover:underline">
+                {project.publication.text}.
+              </a>
+            </p>
+            <a href={project.href} class="text-sm text-slate-500 hover:text-primary-400 transition-colors">
+              Project Summary →
+            </a>
+          </div>
+
+          <!-- Image -->
+          <div class="md:w-72 flex-shrink-0">
+            <a href={project.href}>
+              <img
+                src={project.image}
+                alt={project.title}
+                class="w-full rounded-lg border border-slate-700 hover:border-primary-500 transition-colors"
+              />
+            </a>
+          </div>
+        </article>
       ))}
     </div>
   </div>
