@@ -7,4 +7,5 @@ export default defineConfig({
   base: '/portfolio',
   integrations: [tailwind()],
   output: 'static',
+  trailingSlash: 'always',
 });

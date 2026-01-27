@@ -5,8 +5,8 @@
 const hero = {
   greeting: "Hello there.",
   name: "Fangzhou Zhai",
-  title: "NLP Researcher & ML Engineer",
-  description: "PhD in NLP with 7+ publications at top conferences (ACL, EMNLP, COLING), building AI systems that work with limited data and real-world constraints. I specialize in full-stack ML—from novel architecture design to dataset construction to production optimization. Currently looking for applied research or ML/NLP engineering roles.",
+  title: "",
+  description: "I have a PhD in NLP with 7+ publications at top conferences (ACL, EMNLP, COLING), building AI systems that work with limited data and real-world constraints. My work has set new benchmarks in script parsing, enabled the first successful zero-shot approach to procedural knowledge extraction, and created publicly available datasets through large-scale crowdsourcing (250+ participants, novel quality control methodologies). I specialize in full-stack ML—from novel architecture design to dataset construction to production optimization. I am located in eastern US, currently looking for applied research or ML/NLP engineering roles.",
   resumeLink: "https://drive.google.com/file/d/1-5PssIrzoVZLJgwhLO0OiqEKETAnFQXf/view?usp=drive_link",
   contactLink: "#contact",
 };
@@ -22,9 +22,11 @@ const hero = {
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-4">
         {hero.name}
       </h1>
-      <p class="text-xl sm:text-2xl text-slate-600 font-medium mb-6">
-        {hero.title}
-      </p>
+      {hero.title && (
+        <p class="text-xl sm:text-2xl text-slate-600 font-medium mb-6">
+          {hero.title}
+        </p>
+      )}
       <p class="text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl">
         {hero.description}
       </p>
