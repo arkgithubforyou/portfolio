@@ -1,0 +1,48 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+// ============================================
+// PROJECT 5 - Edit your project details here
+// ============================================
+const project = {
+  title: "Project Five",
+  description: "Interactive data visualization and analytics dashboard.",
+  tags: ["Data Science", "Visualization", "D3.js"],
+  github: "https://github.com/yourusername/project-5",
+  demo: "https://project-5-demo.example.com",
+};
+---
+
+<ProjectLayout {...project}>
+  <h2>Overview</h2>
+  <p>
+    Describe the data visualization project. What insights does it reveal?
+    Who are the target users?
+  </p>
+
+  <h2>Data Pipeline</h2>
+  <ul>
+    <li>Data sources and collection methods</li>
+    <li>ETL processes and data cleaning</li>
+    <li>Storage and indexing strategies</li>
+  </ul>
+
+  <h2>Visualization Design</h2>
+  <p>
+    Explain the visualization choices, including chart types,
+    interaction patterns, and accessibility considerations.
+  </p>
+
+  <h2>Technical Stack</h2>
+  <ul>
+    <li>D3.js for custom visualizations</li>
+    <li>Backend data processing</li>
+    <li>Real-time data updates</li>
+  </ul>
+
+  <h2>User Research</h2>
+  <p>
+    Share any user feedback, usability testing results,
+    or iterative design improvements.
+  </p>
+</ProjectLayout>

@@ -1,0 +1,62 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+// ============================================
+// PROJECT 1 - Edit your project details here
+// ============================================
+const project = {
+  title: "Project One",
+  description: "A comprehensive machine learning pipeline for predictive analytics.",
+  tags: ["Python", "Machine Learning", "TensorFlow"],
+  github: "https://github.com/yourusername/project-1",
+  demo: "", // Optional: link to live demo
+};
+---
+
+<ProjectLayout {...project}>
+  <!--
+    Edit the content below to describe your project.
+    You can use HTML with Tailwind classes for styling.
+  -->
+
+  <h2>Overview</h2>
+  <p>
+    Provide a high-level overview of the project. What problem does it solve?
+    Who is it for? What makes it unique or interesting?
+  </p>
+
+  <h2>Technical Details</h2>
+  <p>
+    Describe the technical architecture and key implementation details:
+  </p>
+  <ul>
+    <li>Core technologies and frameworks used</li>
+    <li>System architecture and design patterns</li>
+    <li>Data processing pipeline</li>
+    <li>Model training and evaluation approach</li>
+  </ul>
+
+  <h2>Key Features</h2>
+  <ul>
+    <li><strong>Feature 1:</strong> Description of the first key feature</li>
+    <li><strong>Feature 2:</strong> Description of the second key feature</li>
+    <li><strong>Feature 3:</strong> Description of the third key feature</li>
+  </ul>
+
+  <h2>Challenges & Solutions</h2>
+  <p>
+    Discuss the main challenges you faced and how you solved them.
+    This demonstrates your problem-solving abilities.
+  </p>
+
+  <h2>Results & Impact</h2>
+  <p>
+    Share quantitative results, performance metrics, or qualitative impact.
+    Include any publications, presentations, or recognition.
+  </p>
+
+  <h2>Future Work</h2>
+  <p>
+    Mention potential improvements or extensions you're considering.
+  </p>
+</ProjectLayout>

@@ -1,0 +1,48 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+// ============================================
+// PROJECT 2 - Edit your project details here
+// ============================================
+const project = {
+  title: "Project Two",
+  description: "A full-stack web application with real-time collaboration features.",
+  tags: ["React", "TypeScript", "Node.js"],
+  github: "https://github.com/yourusername/project-2",
+  demo: "https://project-2-demo.example.com",
+};
+---
+
+<ProjectLayout {...project}>
+  <h2>Overview</h2>
+  <p>
+    Describe your web application project. What user problem does it address?
+    What's the core functionality?
+  </p>
+
+  <h2>Technical Stack</h2>
+  <ul>
+    <li><strong>Frontend:</strong> React with TypeScript, state management approach</li>
+    <li><strong>Backend:</strong> Node.js/Express, API design</li>
+    <li><strong>Database:</strong> Database choice and schema design</li>
+    <li><strong>Infrastructure:</strong> Deployment and hosting details</li>
+  </ul>
+
+  <h2>Key Features</h2>
+  <ul>
+    <li>Real-time collaboration using WebSockets</li>
+    <li>User authentication and authorization</li>
+    <li>Responsive design for mobile and desktop</li>
+  </ul>
+
+  <h2>Architecture</h2>
+  <p>
+    Explain the system architecture, including any microservices,
+    API design decisions, or interesting patterns used.
+  </p>
+
+  <h2>Lessons Learned</h2>
+  <p>
+    Share insights gained from building this project.
+  </p>
+</ProjectLayout>

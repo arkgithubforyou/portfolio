@@ -1,0 +1,47 @@
+---
+// ============================================
+// HERO SECTION - Edit your introduction here
+// ============================================
+const hero = {
+  greeting: "Hello, I'm",
+  name: "Your Name",
+  title: "Software Engineer & Researcher",
+  description: "I build innovative solutions at the intersection of technology and research. Currently focused on [your focus area]. Previously at [previous experience].",
+  resumeLink: "#", // Add link to your resume/CV
+  contactLink: "#contact",
+};
+---
+
+<section class="relative py-20 sm:py-32 overflow-hidden">
+  <!-- Subtle gradient background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-slate-50"></div>
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl">
+      <p class="text-primary-600 font-medium mb-2">{hero.greeting}</p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-4">
+        {hero.name}
+      </h1>
+      <p class="text-xl sm:text-2xl text-slate-600 font-medium mb-6">
+        {hero.title}
+      </p>
+      <p class="text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl">
+        {hero.description}
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href={hero.contactLink}
+          class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
+        >
+          Get in Touch
+        </a>
+        <a
+          href={hero.resumeLink}
+          class="inline-flex items-center px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors"
+        >
+          View Resume
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

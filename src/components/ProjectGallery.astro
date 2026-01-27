@@ -1,0 +1,63 @@
+---
+import ProjectCard from './ProjectCard.astro';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+// ============================================
+// PROJECTS - Edit your projects here
+// ============================================
+const projects = [
+  {
+    title: "Project One",
+    description: "A brief description of your first project. Explain what problem it solves and your role.",
+    tags: ["Python", "Machine Learning", "TensorFlow"],
+    href: `${baseUrl}projects/project-1`,
+    image: "", // Add image path: /images/project-1.png
+  },
+  {
+    title: "Project Two",
+    description: "Description of your second project. Highlight the technologies used and impact.",
+    tags: ["React", "TypeScript", "Node.js"],
+    href: `${baseUrl}projects/project-2`,
+    image: "",
+  },
+  {
+    title: "Project Three",
+    description: "Your third project description. Focus on unique challenges and solutions.",
+    tags: ["Rust", "WebAssembly", "Performance"],
+    href: `${baseUrl}projects/project-3`,
+    image: "",
+  },
+  {
+    title: "Project Four",
+    description: "Fourth project details. Mention collaboration, research, or industry applications.",
+    tags: ["Go", "Kubernetes", "AWS"],
+    href: `${baseUrl}projects/project-4`,
+    image: "",
+  },
+  {
+    title: "Project Five",
+    description: "Your fifth project. Include publications, presentations, or open-source contributions.",
+    tags: ["Data Science", "Visualization", "D3.js"],
+    href: `${baseUrl}projects/project-5`,
+    image: "",
+  },
+];
+---
+
+<section id="projects" class="py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Featured Projects</h2>
+      <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+        A selection of projects showcasing my work in software development and research.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map((project) => (
+        <ProjectCard {...project} />
+      ))}
+    </div>
+  </div>
+</section>

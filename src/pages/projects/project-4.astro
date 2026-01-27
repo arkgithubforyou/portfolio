@@ -1,0 +1,42 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+// ============================================
+// PROJECT 4 - Edit your project details here
+// ============================================
+const project = {
+  title: "Project Four",
+  description: "Cloud-native infrastructure and DevOps automation.",
+  tags: ["Go", "Kubernetes", "AWS"],
+  github: "https://github.com/yourusername/project-4",
+  demo: "",
+};
+---
+
+<ProjectLayout {...project}>
+  <h2>Overview</h2>
+  <p>
+    Describe the infrastructure or DevOps project. What operational
+    challenges does it address?
+  </p>
+
+  <h2>Architecture</h2>
+  <ul>
+    <li>Kubernetes cluster design</li>
+    <li>Service mesh and networking</li>
+    <li>CI/CD pipeline implementation</li>
+    <li>Monitoring and observability</li>
+  </ul>
+
+  <h2>Automation</h2>
+  <p>
+    Detail the automation tools and scripts developed,
+    including infrastructure as code approaches.
+  </p>
+
+  <h2>Impact</h2>
+  <p>
+    Share metrics on deployment frequency, reliability improvements,
+    or cost savings achieved.
+  </p>
+</ProjectLayout>
