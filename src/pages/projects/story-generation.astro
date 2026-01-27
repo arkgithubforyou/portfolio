@@ -5,19 +5,17 @@ const project = {
   title: "Controlled Story Generation",
   description: "Multi-task neural architecture for controlled text generation with rich details.",
   tags: ["PyTorch", "Text Generation", "Attention", "Crowdsourcing"],
-  github: "",
-  demo: "",
 };
 
 const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <ProjectLayout {...project}>
-  <p class="text-lg text-slate-600 mb-6">
-    <a href="https://aclanthology.org/2020.coling-main.212/" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">Published at COLING 2020</a>
+  <p>
+    <a href="https://aclanthology.org/2020.coling-main.212/" target="_blank" rel="noopener noreferrer">Published at COLING 2020</a>
   </p>
 
-  <img src={`${baseUrl}images/story0.png`} alt="Story Generation Architecture" class="rounded-lg mb-8 w-full" />
+  <img src={`${baseUrl}images/story0.png`} alt="Story Generation Architecture" />
 
   <h2>Overview</h2>
   <p>
@@ -34,9 +32,7 @@ const baseUrl = import.meta.env.BASE_URL;
   </ul>
 
   <h2>Technical Approach</h2>
-  <p>
-    The system uses a multi-task learning framework with three key components:
-  </p>
+  <p>The system uses a multi-task learning framework with three key components:</p>
   <ul>
     <li><strong>Agenda-aware encoder:</strong> Bi-LSTM that tracks generation progress through the planned narrative structure</li>
     <li><strong>Dual decoders:</strong> Separate decoders for structural content (main events) and enrichment content (engaging details)</li>
@@ -50,35 +46,33 @@ const baseUrl = import.meta.env.BASE_URL;
   </p>
 
   <h3>Reducing Generic Text Generation</h3>
-  <p>
-    Neural language models tend to produce generic, high-probability text. We implemented MMI decoding that actively suppresses high-frequency generic phrases:
-  </p>
-  <pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto"><code>score = log p(text|context) - 0.1 × log p(text)</code></pre>
+  <p>Neural language models tend to produce generic, high-probability text. We implemented MMI decoding that actively suppresses high-frequency generic phrases:</p>
+  <pre><code>score = log p(text|context) - 0.1 × log p(text)</code></pre>
 
   <h2>Results</h2>
-  <table class="w-full text-left border-collapse mb-6">
+  <table>
     <thead>
-      <tr class="border-b border-slate-200">
-        <th class="py-2">Model</th>
-        <th class="py-2">Informativeness</th>
-        <th class="py-2">Global Coherence</th>
+      <tr>
+        <th>Model</th>
+        <th>Informativeness</th>
+        <th>Global Coherence</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="border-b border-slate-100">
-        <td class="py-2">Baseline</td>
-        <td class="py-2">0.38</td>
-        <td class="py-2">0.40</td>
-      </tr>
-      <tr class="border-b border-slate-100">
-        <td class="py-2 font-semibold">Our Model</td>
-        <td class="py-2 font-semibold">0.51</td>
-        <td class="py-2 font-semibold">0.49</td>
+      <tr>
+        <td>Baseline</td>
+        <td>0.38</td>
+        <td>0.40</td>
       </tr>
       <tr>
-        <td class="py-2 text-slate-500">Human (upper bound)</td>
-        <td class="py-2 text-slate-500">0.66</td>
-        <td class="py-2 text-slate-500">0.66</td>
+        <td><strong>Our Model</strong></td>
+        <td><strong>0.51</strong></td>
+        <td><strong>0.49</strong></td>
+      </tr>
+      <tr>
+        <td>Human (upper bound)</td>
+        <td>0.66</td>
+        <td>0.66</td>
       </tr>
     </tbody>
   </table>

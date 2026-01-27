@@ -5,19 +5,17 @@ const project = {
   title: "Supervised Script Parsing",
   description: "Hierarchical sequence modeling for procedural knowledge extraction.",
   tags: ["NLU", "XLNet", "Back-translation", "Sequence Labeling"],
-  github: "",
-  demo: "",
 };
 
 const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <ProjectLayout {...project}>
-  <p class="text-lg text-slate-600 mb-6">
-    <a href="https://aclanthology.org/2021.starsem-1.18" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">Published at *SEM 2021</a>
+  <p>
+    <a href="https://aclanthology.org/2021.starsem-1.18" target="_blank" rel="noopener noreferrer">Published at *SEM 2021</a>
   </p>
 
-  <img src={`${baseUrl}images/ssp.png`} alt="Supervised Script Parsing Architecture" class="rounded-lg mb-8 w-full" />
+  <img src={`${baseUrl}images/ssp.png`} alt="Supervised Script Parsing Architecture" />
 
   <h2>Overview</h2>
   <p>
@@ -59,33 +57,33 @@ const baseUrl = import.meta.env.BASE_URL;
   </ul>
 
   <h2>Results</h2>
-  <table class="w-full text-left border-collapse mb-6">
+  <table>
     <thead>
-      <tr class="border-b border-slate-200">
-        <th class="py-2">Model</th>
-        <th class="py-2">Event F1</th>
-        <th class="py-2">Participant F1</th>
+      <tr>
+        <th>Model</th>
+        <th>Event F1</th>
+        <th>Participant F1</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="border-b border-slate-100">
-        <td class="py-2">Previous SOTA (CRF)</td>
-        <td class="py-2">58.1 / 66.0</td>
-        <td class="py-2">n/a</td>
-      </tr>
-      <tr class="border-b border-slate-100">
-        <td class="py-2">Fine-tuned XLNet</td>
-        <td class="py-2">62.1 / 79.3</td>
-        <td class="py-2">79.7 / 77.2</td>
+      <tr>
+        <td>Previous SOTA (CRF)</td>
+        <td>58.1 / 66.0</td>
+        <td>n/a</td>
       </tr>
       <tr>
-        <td class="py-2 font-semibold">Our Full Model</td>
-        <td class="py-2 font-semibold">75.1 / 85.7</td>
-        <td class="py-2 font-semibold">80.3 / 90.3</td>
+        <td>Fine-tuned XLNet</td>
+        <td>62.1 / 79.3</td>
+        <td>79.7 / 77.2</td>
+      </tr>
+      <tr>
+        <td><strong>Our Full Model</strong></td>
+        <td><strong>75.1 / 85.7</strong></td>
+        <td><strong>80.3 / 90.3</strong></td>
       </tr>
     </tbody>
   </table>
-  <p class="text-sm text-slate-500">Values shown as macro / micro F1</p>
+  <p>Values shown as macro / micro F1</p>
 
   <h2>Key Findings</h2>
   <p>
