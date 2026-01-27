@@ -1,0 +1,100 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+const project = {
+  title: "Recipe Alignment",
+  description: "Action-level recipe alignment corpus and neural alignment model.",
+  tags: ["Corpus Construction", "Crowdsourcing", "BERT", "PyTorch"],
+  github: "",
+  demo: "",
+};
+
+const baseUrl = import.meta.env.BASE_URL;
+---
+
+<ProjectLayout {...project}>
+  <p class="text-lg text-slate-600 mb-6">
+    <a href="https://aclanthology.org/2021.emnlp-main.554" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">Published at EMNLP 2021</a>
+  </p>
+
+  <img src={`${baseUrl}images/recipe1.png`} alt="Recipe Alignment Pipeline" class="rounded-lg mb-8 w-full" />
+
+  <h2>Overview</h2>
+  <p>
+    Recipe texts present unique challenges for automatic understanding: the same dish can be explained with vastly different levels of detail, alternative phrasings, and varying orderings. Understanding which actions across recipes correspond to each other is crucial for applications like cooking assistants, recipe recommendation systems, and automated recipe generation.
+  </p>
+  <p>
+    Previous work aligned recipes only at the sentence level. This project developed the <strong>first action-level recipe alignment corpus and neural model</strong>.
+  </p>
+
+  <h2>Impact</h2>
+  <ul>
+    <li>Created <strong>ARA corpus</strong>: 1,592 fine-grained action alignments across 110 recipes</li>
+    <li><strong>78.2 F1</strong> in recipe parsing (vs 71.1 previous SOTA)</li>
+    <li><strong>72.4% alignment accuracy</strong> with graph-aware model</li>
+    <li>Managed <strong>250-participant</strong> crowdsourcing experiment with novel quality control</li>
+  </ul>
+
+  <h2>My Role: Crowdsourcing Pipeline Design</h2>
+  <p>
+    I was in charge of the crowdsourcing component, designing and executing a comprehensive annotation infrastructure:
+  </p>
+
+  <h3>Novel Iterative Voting Methodology</h3>
+  <p>Rather than fixed annotation redundancy, I implemented adaptive quality control:</p>
+  <ol>
+    <li>Initial round: 3 crowd workers vote on each alignment</li>
+    <li>If unique plurality vote exists → accept annotation</li>
+    <li>If no agreement → iteratively collect additional votes until plurality reached</li>
+    <li>Extreme cases (no plurality after 5-6 votes) → expert adjudication (190/1,592 cases)</li>
+  </ol>
+
+  <h3>UI Innovation</h3>
+  <p>
+    70% of recipes contain repeated action words (e.g., multiple "add" instances). I designed a <strong>color-coded interface</strong> where every action was bolded and assigned a unique color, eliminating ambiguity and enabling 69.3% agreement with plurality votes despite task complexity.
+  </p>
+
+  <h3>Participant Management</h3>
+  <ul>
+    <li>250 participants via Prolific (native English speakers)</li>
+    <li>Compensation: £1.47 per task, average £8.82/hour</li>
+    <li>Each participant completed ~32 questions on average</li>
+  </ul>
+
+  <h2>Disagreement Analysis</h2>
+  <p>I manually classified 100 cases with no initial majority:</p>
+  <ul>
+    <li><strong>26% Many-to-one alignments:</strong> Different granularity levels across recipes</li>
+    <li><strong>24% Implicit actions:</strong> Actions inferred from context</li>
+    <li><strong>22% Light verbs:</strong> "let rest" vs "allow to stand" ambiguity</li>
+    <li><strong>17% No best alignment:</strong> Genuinely no good correspondence</li>
+  </ul>
+
+  <h2>Results</h2>
+  <table class="w-full text-left border-collapse mb-6">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="py-2">Model</th>
+        <th class="py-2">Accuracy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-b border-slate-100">
+        <td class="py-2">Cosine similarity baseline</td>
+        <td class="py-2">41.5%</td>
+      </tr>
+      <tr class="border-b border-slate-100">
+        <td class="py-2">Text-only model</td>
+        <td class="py-2">66.3%</td>
+      </tr>
+      <tr class="border-b border-slate-100">
+        <td class="py-2 font-semibold">With graph structure</td>
+        <td class="py-2 font-semibold">72.4%</td>
+      </tr>
+      <tr>
+        <td class="py-2 text-slate-500">Human upper bound</td>
+        <td class="py-2 text-slate-500">79.0%</td>
+      </tr>
+    </tbody>
+  </table>
+</ProjectLayout>

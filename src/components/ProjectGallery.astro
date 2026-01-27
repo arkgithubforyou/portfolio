@@ -8,39 +8,39 @@ const baseUrl = import.meta.env.BASE_URL;
 // ============================================
 const projects = [
   {
-    title: "Project One",
-    description: "A brief description of your first project. Explain what problem it solves and your role.",
-    tags: ["Python", "Machine Learning", "TensorFlow"],
-    href: `${baseUrl}projects/project-1`,
-    image: "", // Add image path: /images/project-1.png
+    title: "Controlled Story Generation",
+    description: "Multi-task neural architecture for controlled text generation. 34% quality improvement, 90% data reduction through transfer learning. Published at COLING.",
+    tags: ["Text Generation", "PyTorch", "Crowdsourcing"],
+    href: `${baseUrl}projects/story-generation`,
+    image: `${baseUrl}images/story0.png`,
   },
   {
-    title: "Project Two",
-    description: "Description of your second project. Highlight the technologies used and impact.",
-    tags: ["React", "TypeScript", "Node.js"],
-    href: `${baseUrl}projects/project-2`,
-    image: "",
+    title: "Zero-shot Script Parsing",
+    description: "First zero-shot system for extracting structured knowledge from narratives without scenario-specific training. 68% F1 on unseen scenarios. Published at COLING.",
+    tags: ["Zero-shot Learning", "XLNet/GPT", "Semi-supervised"],
+    href: `${baseUrl}projects/zero-shot-parsing`,
+    image: `${baseUrl}images/zs1.png`,
   },
   {
-    title: "Project Three",
-    description: "Your third project description. Focus on unique challenges and solutions.",
-    tags: ["Rust", "WebAssembly", "Performance"],
-    href: `${baseUrl}projects/project-3`,
-    image: "",
+    title: "Supervised Script Parsing",
+    description: "Improved SOTA in procedural knowledge extraction by 16+ F1 points. First system to parse both events (85.7% F1) and participants (90.3% F1). Published at *SEM.",
+    tags: ["NLU", "Sequence Labeling", "Back-translation"],
+    href: `${baseUrl}projects/supervised-parsing`,
+    image: `${baseUrl}images/ssp.png`,
   },
   {
-    title: "Project Four",
-    description: "Fourth project details. Mention collaboration, research, or industry applications.",
-    tags: ["Go", "Kubernetes", "AWS"],
-    href: `${baseUrl}projects/project-4`,
-    image: "",
+    title: "Recipe Alignment",
+    description: "Complete recipe understanding pipeline with 250-participant crowdsourcing experiment. Created first action-level alignment corpus (1,592 alignments). Published at EMNLP.",
+    tags: ["Corpus Construction", "Crowdsourcing", "BERT"],
+    href: `${baseUrl}projects/recipe-alignment`,
+    image: `${baseUrl}images/recipe1.png`,
   },
   {
-    title: "Project Five",
-    description: "Your fifth project. Include publications, presentations, or open-source contributions.",
-    tags: ["Data Science", "Visualization", "D3.js"],
-    href: `${baseUrl}projects/project-5`,
-    image: "",
+    title: "Gregg Shorthand Recognition",
+    description: "Deep learning system for recognizing English from Gregg shorthand images. Created first large-scale dataset (15K+ words), achieved 58% top-5 accuracy. Published at TSD.",
+    tags: ["Image to Text", "CNN/LSTM", "Retrieval"],
+    href: `${baseUrl}projects/gregg-shorthand`,
+    image: `${baseUrl}images/gregg1.png`,
   },
 ];
 ---
@@ -50,7 +50,7 @@ const projects = [
     <div class="text-center mb-12">
       <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Featured Projects</h2>
       <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-        A selection of projects showcasing my work in software development and research.
+        A selection of research projects in NLP and machine learning, published at top venues.
       </p>
     </div>
 

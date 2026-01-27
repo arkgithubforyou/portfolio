@@ -4,7 +4,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Personal portfolio showcasing my projects and skills" } = Astro.props;
+const { title, description = "Fangzhou Zhai - NLP Researcher & ML Engineer with 7+ publications at ACL, EMNLP, COLING" } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
 ---
 
@@ -26,7 +26,7 @@ const baseUrl = import.meta.env.BASE_URL;
       <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <a href={baseUrl} class="text-xl font-semibold text-slate-900 hover:text-primary-600 transition-colors">
-            Your Name
+            Fangzhou Zhai
           </a>
           <div class="flex items-center gap-6">
             <a href={baseUrl} class="text-slate-600 hover:text-primary-600 transition-colors">Home</a>
@@ -44,7 +44,7 @@ const baseUrl = import.meta.env.BASE_URL;
 
     <footer class="bg-slate-900 text-slate-400 py-8 mt-20">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p>&copy; {new Date().getFullYear()} Your Name. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Fangzhou Zhai. All rights reserved.</p>
       </div>
     </footer>
   </body>

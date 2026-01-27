@@ -1,0 +1,76 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+const project = {
+  title: "Zero-shot Script Parsing",
+  description: "First zero-shot system for extracting structured knowledge from narrative texts.",
+  tags: ["Zero-shot Learning", "XLNet/GPT", "PyTorch", "Metric Design"],
+  github: "",
+  demo: "",
+};
+
+const baseUrl = import.meta.env.BASE_URL;
+---
+
+<ProjectLayout {...project}>
+  <p class="text-lg text-slate-600 mb-6">
+    <a href="https://aclanthology.org/2022.coling-1.356" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:underline">Published at COLING 2022</a>
+  </p>
+
+  <img src={`${baseUrl}images/zs1.png`} alt="Zero-shot Script Parsing" class="rounded-lg mb-8 w-full" />
+
+  <h2>Overview</h2>
+  <p>
+    Script knowledge refers to our understanding of how everyday activities typically unfold—for example, the sequence of events when visiting a restaurant or fixing a flat tire. While this knowledge is useful for various language processing applications, existing systems could only analyze scenarios they were specifically trained on.
+  </p>
+  <p>
+    This project developed the <strong>first system capable of parsing script information from text without requiring training data for each specific scenario</strong>, enabling automatic extraction of structured knowledge from previously unseen activities.
+  </p>
+
+  <h2>Impact</h2>
+  <ul>
+    <li><strong>68.1% Event Parsing F1</strong> on completely unseen scenarios</li>
+    <li><strong>74.4% Participant Parsing F1</strong></li>
+    <li>Matches supervised baselines while generalizing to new domains</li>
+    <li>Eliminates need for per-scenario annotation (saving millions in annotation costs)</li>
+  </ul>
+
+  <h2>Technical Approach</h2>
+  <p>The system operates in two phases:</p>
+
+  <h3>Training Phase</h3>
+  <p>
+    Using annotated stories from known scenarios, the model learns to map language into a representation space where phrases describing the same event or participant cluster together. The training incorporates:
+  </p>
+  <ul>
+    <li>Consistency constraints for semantically related phrases</li>
+    <li>Coreference information to link mentions of the same entity</li>
+    <li>Dependency structures to capture event-participant relationships</li>
+  </ul>
+
+  <h3>Inference Phase</h3>
+  <p>
+    For new scenarios, the system identifies candidate events and participants, applies the learned transformation, and uses agglomerative clustering to group them into meaningful classes.
+  </p>
+
+  <h2>Key Challenges Solved</h2>
+
+  <h3>Evaluation Without Ground-Truth Label Mapping</h3>
+  <p>
+    In zero-shot clustering, we don't know which predicted cluster corresponds to which gold class. We developed a novel <strong>Hungarian F1 metric</strong> that solves the optimal assignment problem, allowing fair comparison with supervised systems.
+  </p>
+
+  <h3>Tractable Training Objective</h3>
+  <p>
+    We designed novel consistency metrics that provide stable training signals:
+  </p>
+  <ul>
+    <li><strong>External consistency:</strong> Penalizes different-class candidates only if "too close"</li>
+    <li><strong>Internal consistency:</strong> Penalizes same-class candidates only if "too far"</li>
+  </ul>
+
+  <h2>Results</h2>
+  <p>
+    The model successfully learned to amplify high-level semantic and narrative information while suppressing low-level linguistic details. Error analysis revealed that most mistakes involved granularity issues rather than fundamental misunderstandings—for instance, confusing "turn on water" with the broader event "fill tub with water."
+  </p>
+</ProjectLayout>
