@@ -2,9 +2,9 @@
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 const project = {
-  title: "Supervised Script Parsing",
-  description: "Hierarchical sequence modeling for procedural knowledge extraction.",
-  tags: ["NLU", "XLNet", "Back-translation", "Sequence Labeling"],
+  title: "Hierarchical Script Parsing with Sequence Modeling",
+  description: "NLU | Back-translation / Data Augmentation | Sequence Labeling | Published at *SEM",
+  tags: ["NLU", "Back-translation", "Data Augmentation", "Sequence Labeling", "XLNet"],
 };
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -15,78 +15,145 @@ const baseUrl = import.meta.env.BASE_URL;
     <a href="https://aclanthology.org/2021.starsem-1.18" target="_blank" rel="noopener noreferrer">Published at *SEM 2021</a>
   </p>
 
-  <img src={`${baseUrl}images/ssp.png`} alt="Supervised Script Parsing Architecture" />
+  <img src={`${baseUrl}images/ssp.png`} alt="Hierarchical Script Parsing Architecture" />
 
-  <h2>Overview</h2>
+  <h2>Introduction</h2>
   <p>
-    Understanding how everyday activities unfold is fundamental to many NLP applications, from conversational AI to content generation. Script parsing is the task of automatically identifying which parts of a text correspond to activity-specific events and participants.
+    Understanding how everyday activities unfold is fundamental to many NLP applications, from conversational AI to content generation. Script knowledge captures this commonsense understanding—for instance, that grocery shopping typically involves getting a cart, selecting items, and checking out. Script parsing is the task of automatically identifying which parts of a text correspond to these activity-specific events and participants.
   </p>
   <p>
-    This task is challenging even for humans (inter-annotator agreement: 0.64-0.77 Fleiss' κ). Previous approaches achieved only 66% accuracy on event parsing and had not successfully addressed participant parsing at all.
+    This task is challenging even for humans (inter-annotator agreement: 0.64-0.77 Fleiss' κ) because it requires both local understanding of language and global understanding of how activities unfold. Previous approaches achieved only 66% accuracy on event parsing and had not successfully addressed participant parsing at all.
   </p>
-
-  <h2>Impact</h2>
-  <ul>
-    <li><strong>+16.1 F1 points</strong> improvement over previous SOTA in event parsing</li>
-    <li><strong>85.7% micro-F1</strong> for event parsing</li>
-    <li><strong>90.3% micro-F1</strong> for participant parsing (first successful system)</li>
-    <li>Single scenario-agnostic model handles all 10 activity scenarios</li>
-  </ul>
-
-  <h2>Technical Approach</h2>
   <p>
-    The key insight is that script parsing requires information at two different granularities:
+    This project developed a hierarchical neural architecture that learns patterns at multiple levels of granularity, achieving state-of-the-art performance with a 16+ point improvement in event parsing F1 and delivering the first accurate participant parsing results (90.3% micro-F1).
   </p>
+
+  <h2>Project Overview</h2>
+  <p><strong>Problem:</strong> AI systems need to understand procedural knowledge to power applications like virtual assistants, automated documentation, and content comprehension. Existing approaches struggled with accuracy and couldn't reliably identify both what happens (events) and who/what is involved (participants).</p>
+
+  <p><strong>Solution:</strong> A hierarchical sequence modeling architecture that captures both word-level patterns (how events are expressed in language) and discourse-level patterns (how events relate to each other in the narrative flow). Combined with strategic data augmentation to handle sparse training data.</p>
+
+  <p><strong>Impact:</strong></p>
   <ul>
-    <li><strong>Word-level patterns:</strong> How events are expressed in surface language</li>
-    <li><strong>Discourse-level patterns:</strong> The procedural order in which events occur</li>
+    <li>16+ point F1 improvement in event parsing over previous SOTA (75.1 macro-F1 vs 58.1)</li>
+    <li>First successful participant parsing system (80.3 macro-F1, 90.3 micro-F1)</li>
+    <li>Works across 10 different activity scenarios with scenario-agnostic model</li>
+    <li>Handles data sparsity effectively: 26 classes with &lt;10 training examples still learned successfully</li>
   </ul>
 
-  <h3>Architecture</h3>
-  <p>Two-level sequence modeling:</p>
-  <ul>
-    <li><strong>Stage 1 - Word sequence model:</strong> XLNet-base-cased encoding of the full story</li>
-    <li><strong>Stage 2 - Event sequence model:</strong> Bi-LSTM over extracted candidates, modeling discourse-level patterns</li>
-  </ul>
+  <p><strong>Technical approach:</strong> Two-level sequence modeling using XLNet contextualized embeddings followed by Bi-LSTM for discourse-level patterns, with domain adaptation and back-translation for data augmentation.</p>
 
-  <h3>Addressing Data Sparsity</h3>
-  <p>With 26 classes having fewer than 10 instances:</p>
+  <h2>Methodology</h2>
+
+  <img src={`${baseUrl}images/ssp2.png`} alt="Script Parsing Methodology" />
+
+  <p><strong>Problem formulation:</strong> Given a text about an everyday activity (e.g., "Yesterday I went grocery shopping..."), identify which verbs correspond to which scenario-specific events (e.g., "enter store", "pick groceries", "pay") and which noun phrases correspond to which participants (e.g., "customer", "shopping cart", "groceries").</p>
+
+  <p><strong>Data:</strong> InScript corpus (100 stories × 10 scenarios = ~1,000 stories) and DeScript corpus (50 process descriptions × 10 scenarios). Average 19.2 event classes and 18.9 participant classes per scenario. Highly imbalanced: largest class has 397 instances while 26 classes have &lt;10 instances.</p>
+
+  <h3>Architecture design - Hierarchical sequence modeling</h3>
+  <p>The key insight is that script parsing requires information at two different granularities:</p>
+  <ol>
+    <li><strong>Word-level patterns:</strong> How events and participants are typically expressed in surface language (e.g., "grabbed a cart", "took a shopping cart", "got a trolley" all refer to the same event)</li>
+    <li><strong>Discourse-level patterns:</strong> The procedural order in which events occur (e.g., you "enter store" before you "pick groceries" before you "pay")</li>
+  </ol>
+
+  <p>The architecture implements this through two sequence models:</p>
+
+  <p><strong>Stage 1 - Word sequence model:</strong> Uses xlnet-base-cased to encode the full story, capturing local semantic and syntactic context.</p>
+
+  <p><strong>Stage 2 - Event sequence model:</strong> Index selection extracts only candidate representations (verbs for events, noun phrase heads for participants), then a Bi-LSTM models the sequence at the discourse level. This allows the model to learn that certain event orderings are plausible while others are not.</p>
+
+  <h3>Addressing data sparsity</h3>
+  <p>With 26 classes having &lt;10 instances, the model needed strategic approaches to generalization:</p>
+  <ol>
+    <li><strong>Domain adaptation:</strong> Incorporated DeScript corpus as auxiliary training data using corpus embeddings—learned vector representations for each corpus to capture corpus-specific linguistic styles, then concatenated with candidate representations to handle domain differences.</li>
+    <li><strong>Back-translation data augmentation:</strong> Paraphrased InScript stories via French back-translation (English → French → English using Google Translate), generating variations that help the model generalize beyond specific phrasings. Event/participant annotations mapped to paraphrases using word-level semantics and string matching heuristics.</li>
+  </ol>
+
+  <p>Example augmentation:</p>
   <ul>
-    <li><strong>Domain adaptation:</strong> Corpus embeddings to handle cross-corpus differences</li>
-    <li><strong>Back-translation augmentation:</strong> English → French → English paraphrasing via Google Translate</li>
+    <li>Original: "when I was riding my bike"</li>
+    <li>Back-translated: "when I rode my bike"</li>
   </ul>
+  <p>This creates variations in tense, surface forms, and phrasing while preserving semantic meaning.</p>
+
+  <p><strong>Training:</strong> 80/10/10 train/val/test split by stories. Optimization with standard cross-entropy loss, training the entire model end-to-end including XLNet fine-tuning.</p>
 
   <h2>Results</h2>
+  <p>Evaluation on InScript test set (10% of data, ~100 stories):</p>
+  <ul>
+    <li><strong>75.1 / 85.7</strong> Event Parsing (macro/micro F1)</li>
+    <li><strong>80.3 / 90.3</strong> Participant Parsing (macro/micro F1)</li>
+    <li><strong>+16.1</strong> points improvement over previous SOTA (event macro-F1)</li>
+  </ul>
+
+  <p><strong>System comparison:</strong></p>
   <table>
     <thead>
       <tr>
         <th>Model</th>
-        <th>Event F1</th>
-        <th>Participant F1</th>
+        <th>Event Macro F1</th>
+        <th>Event Micro F1</th>
+        <th>Participant Macro F1</th>
+        <th>Participant Micro F1</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Previous SOTA (CRF)</td>
-        <td>58.1 / 66.0</td>
+        <td>Ostermann et al. 2017 (CRF)</td>
+        <td>58.1</td>
+        <td>66.0</td>
+        <td>n/a</td>
         <td>n/a</td>
       </tr>
       <tr>
-        <td>Fine-tuned XLNet</td>
-        <td>62.1 / 79.3</td>
-        <td>79.7 / 77.2</td>
+        <td>Fine-tuned XLNet (baseline)</td>
+        <td>62.1</td>
+        <td>79.3</td>
+        <td>79.7</td>
+        <td>77.2</td>
       </tr>
       <tr>
-        <td><strong>Our Full Model</strong></td>
-        <td><strong>75.1 / 85.7</strong></td>
-        <td><strong>80.3 / 90.3</strong></td>
+        <td>Hierarchical (no augmentation)</td>
+        <td>70.1</td>
+        <td>83.7</td>
+        <td>78.7</td>
+        <td>89.3</td>
+      </tr>
+      <tr>
+        <td>+ Corpus embedding</td>
+        <td>74.9</td>
+        <td>82.9</td>
+        <td>78.6</td>
+        <td>89.4</td>
+      </tr>
+      <tr>
+        <td><strong>+ Back-translation</strong></td>
+        <td><strong>75.1</strong></td>
+        <td><strong>85.7</strong></td>
+        <td><strong>80.3</strong></td>
+        <td><strong>90.3</strong></td>
       </tr>
     </tbody>
   </table>
-  <p>Values shown as macro / micro F1</p>
 
-  <h2>Key Findings</h2>
-  <p>
-    Ablation study removing the event sequence model dropped performance from 70.1 to 63.3 macro-F1, confirming that discourse-level modeling is essential. Error analysis showed 23% of errors were actually annotation errors in the original data.
-  </p>
+  <h2>Key findings</h2>
+  <p><strong>Architectural validation:</strong> Ablation study removing the event sequence model (no index selection) dropped performance from 70.1 to 63.3 macro-F1 for events, confirming that discourse-level modeling is essential. The hierarchical approach particularly improved performance on irregular candidates (content not part of core event chain), which require structural context to identify correctly.</p>
+
+  <p><strong>Data augmentation effectiveness:</strong> Back-translation provided larger improvements (+5 points macro-F1) than domain adaptation with DeScript, as the augmented data was more similar in style to InScript. The combination of both approaches showed that domain differences between DeScript and InScript began to outweigh benefits when sufficient in-domain augmented data was available.</p>
+
+  <p><strong>Participant vs. event parsing:</strong> Participant parsing achieved higher scores (90.3% vs 85.7% micro-F1) because: (1) fewer irregular participants (19.6% vs 66.5% for events), and (2) protagonist class (31% of participants) is easily identified via first-person pronouns.</p>
+
+  <p><strong>Error analysis (manual classification of validation errors):</strong></p>
+  <ul>
+    <li>23% noisy corpus labels (annotation errors in original data)</li>
+    <li>49% false irregular predictions (primarily small classes or cases requiring pragmatic inference)</li>
+    <li>2% wrong category (verb/noun ambiguity)</li>
+    <li>26% other errors</li>
+  </ul>
+
+  <p>The high proportion of annotation errors (23%) suggests the model's effective performance may be even higher than measured. Small class sizes and the need for pragmatic inference remain the primary challenges.</p>
+
+  <p><strong>Generalization:</strong> Single scenario-agnostic model successfully handles all 10 scenarios, implicitly learning scenario detection. This demonstrates the approach scales without requiring separate models per activity type.</p>
 </ProjectLayout>

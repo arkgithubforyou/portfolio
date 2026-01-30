@@ -3,8 +3,8 @@ import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 const project = {
   title: "Zero-shot Script Parsing",
-  description: "First zero-shot system for extracting structured knowledge from narrative texts.",
-  tags: ["Zero-shot Learning", "XLNet/GPT", "PyTorch", "Metric Design"],
+  description: "Zero-shot | Representation Learning | XLNet/GPT/LLM | PyTorch/AllenNLP | Published at COLING",
+  tags: ["Zero-shot", "Representation Learning", "XLNet", "GPT", "PyTorch", "AllenNLP"],
 };
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -12,63 +12,97 @@ const baseUrl = import.meta.env.BASE_URL;
 
 <ProjectLayout {...project}>
   <p>
-    <a href="https://aclanthology.org/2022.coling-1.356" target="_blank" rel="noopener noreferrer">Published at COLING 2022</a>
+    <a href="https://aclanthology.org/2020.coling-main.279/" target="_blank" rel="noopener noreferrer">Published at COLING 2020</a>
   </p>
 
-  <img src={`${baseUrl}images/zs1.png`} alt="Zero-shot Script Parsing" />
+  <img src={`${baseUrl}images/zs1.png`} alt="Zero-shot Script Parsing Architecture" />
 
-  <h2>Overview</h2>
+  <h2>Introduction</h2>
   <p>
-    Script knowledge refers to our understanding of how everyday activities typically unfold—for example, the sequence of events when visiting a restaurant or fixing a flat tire. While this knowledge is useful for various language processing applications, existing systems could only analyze scenarios they were specifically trained on.
+    Script knowledge refers to our understanding of how everyday activities typically unfold—for example, the sequence of events when visiting a restaurant or fixing a flat tyre. While this knowledge is useful for various language processing applications, existing systems could only analyse scenarios they were specifically trained on, severely limiting their practical use.
   </p>
   <p>
-    This project developed the <strong>first system capable of parsing script information from text without requiring training data for each specific scenario</strong>, enabling automatic extraction of structured knowledge from previously unseen activities.
+    This project developed the first system capable of parsing script information from text without requiring training data for each specific scenario, enabling automatic extraction of structured knowledge from previously unseen activities.
   </p>
 
-  <h2>Impact</h2>
-  <ul>
-    <li><strong>68.1% Event Parsing F1</strong> on completely unseen scenarios</li>
-    <li><strong>74.4% Participant Parsing F1</strong></li>
-    <li>Matches supervised baselines while generalizing to new domains</li>
-    <li>Eliminates need for per-scenario annotation (saving millions in annotation costs)</li>
-  </ul>
+  <h2>Project Overview</h2>
+  <p>
+    The system identifies and labels events (actions) and participants (entities) in narrative texts, then organizes them into structured representations. The key innovation is the ability to generalise: after training on stories about activities like "taking a bath" or "going to a restaurant," the system can accurately parse completely different scenarios like "fixing a flat tyre."
+  </p>
+  <p><strong>Technical approach:</strong> The model learns to transform general-purpose language representations into specialized embeddings optimized for script parsing. At inference, it uses clustering to group together different phrases that refer to the same underlying event or participant.</p>
 
-  <h2>Technical Approach</h2>
+  <h2>Methodology</h2>
+
+  <img src={`${baseUrl}images/zs.png`} alt="Zero-shot Script Parsing Methodology" />
+
   <p>The system operates in two phases:</p>
 
-  <h3>Training Phase</h3>
+  <h3>Training phase</h3>
   <p>
-    Using annotated stories from known scenarios, the model learns to map language into a representation space where phrases describing the same event or participant cluster together. The training incorporates:
+    Using annotated stories from known scenarios, the model learns to map language into a representation space where phrases describing the same event or participant cluster together, while different ones remain separate. The training incorporates:
   </p>
   <ul>
-    <li>Consistency constraints for semantically related phrases</li>
+    <li>Consistency constraints to encourage similar representations for semantically related phrases</li>
     <li>Coreference information to link mentions of the same entity</li>
-    <li>Dependency structures to capture event-participant relationships</li>
+    <li>Dependency structures to capture relationships between events and participants</li>
   </ul>
 
-  <h3>Inference Phase</h3>
+  <h3>Inference phase</h3>
   <p>
-    For new scenarios, the system identifies candidate events and participants, applies the learned transformation, and uses agglomerative clustering to group them into meaningful classes.
+    For new scenarios, the system identifies candidate events and participants, applies the learned transformation, and uses agglomerative clustering to group them into meaningful classes. It then constructs temporal graphs showing the typical ordering of events.
   </p>
 
-  <h2>Key Challenges Solved</h2>
+  <h2>Key Challenges</h2>
+  <p>Building the first zero-shot script parser required solving several fundamental problems:</p>
 
-  <h3>Evaluation Without Ground-Truth Label Mapping</h3>
+  <h3>1. Missing in-domain supervision (core zero-shot challenge)</h3>
   <p>
-    In zero-shot clustering, we don't know which predicted cluster corresponds to which gold class. We developed a novel <strong>Hungarian F1 metric</strong> that solves the optimal assignment problem, allowing fair comparison with supervised systems.
+    Traditional supervised parsers require annotated training data for each scenario. For a new scenario like "fixing a flat tire," existing systems cannot operate without collecting and annotating dozens of stories specifically about that activity. This severely limits practical deployment.
   </p>
+  <p><strong>Solution:</strong> Train an "annotator" model that learns the general task of script parsing from known scenarios, then applies this knowledge to unseen scenarios. The model learns a transformation φ that maps pretrained word embeddings into a script-specific representation space where semantically similar phrases cluster together, regardless of the specific scenario.</p>
 
-  <h3>Tractable Training Objective</h3>
+  <h3>2. Evaluation without ground-truth label mapping</h3>
   <p>
-    We designed novel consistency metrics that provide stable training signals:
+    Standard classification metrics assume we know which predicted cluster corresponds to which gold class. In zero-shot clustering, the system outputs "cluster_1", "cluster_2", etc., but we don't know if "cluster_1" should map to the gold class "get tools" or "examine tire."
   </p>
+  <p><strong>Solution:</strong> Novel Hungarian F1 metric that solves the optimal assignment problem. Using the Hungarian algorithm, we find the best mapping between predicted clusters and gold classes that maximizes F1 score, allowing fair comparison with supervised systems despite different label spaces.</p>
+
+  <h3>3. Tractable and effective training objective</h3>
+  <p>
+    Training requires encouraging candidates from the same event/participant class to have similar representations while keeping different classes distinct. However, simply minimizing distances within classes and maximizing distances between classes leads to training instability and poor generalization.
+  </p>
+  <p><strong>Solution:</strong> Novel consistency metrics that provide stable training signals:</p>
   <ul>
-    <li><strong>External consistency:</strong> Penalizes different-class candidates only if "too close"</li>
-    <li><strong>Internal consistency:</strong> Penalizes same-class candidates only if "too far"</li>
+    <li><strong>External consistency (γ_ext):</strong> Penalizes candidates from different classes only if they're "too close" (within threshold σ₁)</li>
+    <li><strong>Internal consistency (γ_int):</strong> Penalizes candidates from the same class only if they're "too far" (beyond threshold σ₂)</li>
+    <li>Combined with coreference and dependency information to inject script-specific structural knowledge</li>
   </ul>
+  <p>This design allows efficient evaluation and provides a bounded objective.</p>
+
+  <h3>4. Limited coverage of script knowledge resources</h3>
+  <p>
+    Existing annotated corpora (InScript: 10 scenarios, ~1,000 stories) represent a tiny fraction of everyday activities. Scaling to hundreds of activities through traditional annotation would require millions of dollars and years of effort.
+  </p>
+  <p><strong>Solution:</strong> Zero-shot approach eliminates the need for per-scenario annotation, enabling coverage of arbitrary activities once the model is trained on a small set of diverse scenarios. The learned transformation generalizes to scenarios with completely different event types.</p>
+
+  <h3>5. Handling granularity variations</h3>
+  <p>
+    Events naturally form hierarchies (e.g., "prepare for bath" includes "undress" and "grab towel"). Gold annotations sometimes capture different granularity levels, making it ambiguous whether two similar events should cluster together or separately.
+  </p>
+  <p><strong>Approach:</strong> The model learns granularity preferences from training data patterns. Error analysis showed that two-thirds of event errors involved reasonable alternative granularities rather than fundamental misunderstandings, suggesting the clustering captures meaningful semantic structure even when it disagrees with specific annotation decisions.</p>
 
   <h2>Results</h2>
   <p>
-    The model successfully learned to amplify high-level semantic and narrative information while suppressing low-level linguistic details. Error analysis revealed that most mistakes involved granularity issues rather than fundamental misunderstandings—for instance, confusing "turn on water" with the broader event "fill tub with water."
+    The system achieved performance comparable to supervised models that require scenario-specific training data, despite having no knowledge of the test scenarios:
+  </p>
+  <ul>
+    <li><strong>68.1%</strong> Event Parsing F1</li>
+    <li><strong>74.4%</strong> Participant Parsing F1</li>
+  </ul>
+  <p>
+    When evaluated on a different corpus with different writing styles, the model maintained reasonable performance (55.5% / 54.0% F1), demonstrating genuine generalization capability rather than dataset-specific overfitting.
+  </p>
+  <p>
+    <strong>Key findings:</strong> The model successfully learned to amplify high-level semantic and narrative information while suppressing low-level linguistic details (morphology, syntax) that are less relevant for understanding scenario structure. Error analysis revealed that most mistakes involved granularity issues—for instance, confusing "turn on water" with the broader event "fill tub with water"—rather than fundamental misunderstandings.
   </p>
 </ProjectLayout>

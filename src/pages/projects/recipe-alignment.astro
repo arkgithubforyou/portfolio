@@ -2,9 +2,9 @@
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 const project = {
-  title: "Recipe Alignment",
-  description: "Action-level recipe alignment corpus and neural alignment model.",
-  tags: ["Corpus Construction", "Crowdsourcing", "BERT", "PyTorch"],
+  title: "Aligning Actions Across Recipe Graphs",
+  description: "Natural Language Processing | Published at EMNLP 2021",
+  tags: ["Corpus Construction", "Crowdsourcing", "BERT", "PyTorch", "BiLSTM", "LingoTurk", "Prolific"],
 };
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -15,60 +15,138 @@ const baseUrl = import.meta.env.BASE_URL;
     <a href="https://aclanthology.org/2021.emnlp-main.554" target="_blank" rel="noopener noreferrer">Published at EMNLP 2021</a>
   </p>
 
-  <img src={`${baseUrl}images/recipe1.png`} alt="Recipe Alignment Pipeline" />
+  <img src={`${baseUrl}images/recipe1.png`} alt="Recipe Alignment Overview" />
 
-  <h2>Overview</h2>
+  <h2>Introduction</h2>
   <p>
-    Recipe texts present unique challenges for automatic understanding: the same dish can be explained with vastly different levels of detail, alternative phrasings, and varying orderings. Understanding which actions across recipes correspond to each other is crucial for applications like cooking assistants, recipe recommendation systems, and automated recipe generation.
+    Recipe texts present unique challenges for automatic understanding: the same dish can be explained with vastly different levels of detail, alternative phrasings, and varying orderings. For example, three recipes for waffles might use 3, 8, or 19 distinct cooking actions to describe essentially the same process. Understanding which actions across recipes correspond to each other is crucial for applications like cooking assistants, recipe recommendation systems, and automated recipe generation.
   </p>
   <p>
-    Previous work aligned recipes only at the sentence level. This project developed the <strong>first action-level recipe alignment corpus and neural model</strong>.
+    Previous work aligned recipes only at the sentence level, missing critical fine-grained correspondences. A sentence like "Ladle the batter into the waffle iron and cook until golden" contains multiple distinct actions, and sentence-level alignment obscures the relationship between individual cooking steps across recipes.
   </p>
+  <p>
+    This project developed the first action-level recipe alignment corpus and neural model, involving: (1) building a state-of-the-art recipe parser, (2) designing and executing a large-scale crowd sourcing experiment with 250 participants to collect 1,592 action alignments, and (3) training a neural alignment model that achieved 72.4% accuracy by incorporating recipe graph structure.
+  </p>
+  <p><strong>I was in charge of the crowd sourcing part.</strong></p>
 
-  <h2>Impact</h2>
+  <h2>Project Overview</h2>
+  <p><strong>Business problem:</strong> Recipe platforms, cooking assistants, and meal planning applications need to aggregate information across multiple recipes for the same dish to provide comprehensive guidance. Existing approaches work at the sentence level, missing the fine-grained action correspondences that capture implicit cooking knowledge and enable accurate recipe interpretation.</p>
+
+  <p><strong>Solution:</strong> A complete pipeline from raw recipe text to aligned action graphs, including a neural recipe parser, a sophisticated crowd sourced annotation framework with iterative quality control, and a graph-aware alignment model.</p>
+
+  <p><strong>Impact:</strong></p>
   <ul>
-    <li>Created <strong>ARA corpus</strong>: 1,592 fine-grained action alignments across 110 recipes</li>
-    <li><strong>78.2 F1</strong> in recipe parsing (vs 71.1 previous SOTA)</li>
-    <li><strong>72.4% alignment accuracy</strong> with graph-aware model</li>
-    <li>Managed <strong>250-participant</strong> crowdsourcing experiment with novel quality control</li>
+    <li>Created ARA (Aligned Recipe Actions): first corpus with 1,592 fine-grained action alignments across 110 recipes covering 10 dishes</li>
+    <li>Achieved new state-of-the-art in recipe parsing: 78.2 F1 (vs 71.1 previous SOTA)</li>
+    <li>Designed and executed crowdsourcing infrastructure managing 250 participants with novel iterative voting methodology</li>
+    <li>Alignment model reached 72.4% accuracy, demonstrating that structural information improves performance by 6+ points</li>
+    <li>Identified and quantified sources of disagreement in recipe interpretation, providing insights into the complexity of procedural knowledge</li>
   </ul>
 
-  <h2>My Role: Crowdsourcing Pipeline Design</h2>
-  <p>
-    I was in charge of the crowdsourcing component, designing and executing a comprehensive annotation infrastructure:
-  </p>
+  <p><strong>Technical approach:</strong> BiLSTM-CRF neural parser for recipe graphs, custom crowdsourcing platform with adaptive quality control, graph-aware neural alignment model using BERT embeddings and structural features.</p>
 
-  <h3>Novel Iterative Voting Methodology</h3>
-  <p>Rather than fixed annotation redundancy, I implemented adaptive quality control:</p>
+  <p><strong>Technologies:</strong> Python, PyTorch, AllenNLP, XLNet, BERT, BiLSTM, LingoTurk (crowdsourcing), Prolific</p>
+
+  <img src={`${baseUrl}images/recipe0.png`} alt="Recipe Alignment Methodology" />
+
+  <h2>Methodology</h2>
+
+  <h3>Phase 1: Recipe parsing infrastructure</h3>
+  <p>To enable action-level alignment, we first needed to accurately identify actions in recipe text and structure them into graphs.</p>
+  <ol>
+    <li><strong>Sequence tagging:</strong> BiLSTM-CRF model with ELMo embeddings to identify cooking actions, ingredients, tools, and temporal information in recipe text. Achieved 89.6 F1, matching inter-annotator agreement and outperforming previous work by 2 points.</li>
+    <li><strong>Graph parsing:</strong> Biaffine dependency parser with multilingual BERT to predict edges connecting actions to their ingredients, tools, and temporal ordering. Achieved 78.2 F1 on gold-tagged data and 72.3 F1 end-to-end on raw text (vs 43.3 previous SOTA).</li>
+  </ol>
+
+  <h3>Phase 2: Crowdsourced data collection - Design and execution</h3>
+  <p>Designed and implemented a comprehensive annotation infrastructure to collect action alignments at scale:</p>
+
+  <p><strong>Dataset construction strategy:</strong></p>
+  <ul>
+    <li>Selected 10 diverse dishes spanning cuisines (Italian, Chinese, Indian, American, German) and dish types (appetizer, side, main, dessert)</li>
+    <li>For each dish: 11 recipes, paired long-to-short to minimize 1:n alignment ambiguity</li>
+    <li>Resulted in 110 recipes, 1,592 source actions to align</li>
+  </ul>
+
+  <p><strong>Crowdsourcing platform and interface:</strong></p>
+  <ul>
+    <li>Implemented using LingoTurk, a custom psycholinguistics crowdsourcing framework</li>
+    <li>Designed color-coded interface displaying both recipes simultaneously with all actions bolded in unique colors for easy identification</li>
+    <li>Participants select corresponding action from target recipe or "None" for each source action</li>
+    <li>Presented 2 source actions at a time in recipe order to manage cognitive load</li>
+  </ul>
+
+  <p><strong>Novel iterative voting methodology:</strong></p>
+  <p>Rather than fixed annotation redundancy, implemented adaptive quality control:</p>
   <ol>
     <li>Initial round: 3 crowd workers vote on each alignment</li>
     <li>If unique plurality vote exists → accept annotation</li>
     <li>If no agreement → iteratively collect additional votes until plurality reached</li>
-    <li>Extreme cases (no plurality after 5-6 votes) → expert adjudication (190/1,592 cases)</li>
+    <li>Extreme cases (no plurality after 5-6 votes) → expert adjudication by authors (190/1,592 cases)</li>
   </ol>
+  <p>This approach optimized resource allocation: easy alignments required fewer votes (some achieved 100% agreement with 3 votes), while difficult cases received more attention.</p>
 
-  <h3>UI Innovation</h3>
-  <p>
-    70% of recipes contain repeated action words (e.g., multiple "add" instances). I designed a <strong>color-coded interface</strong> where every action was bolded and assigned a unique color, eliminating ambiguity and enabling 69.3% agreement with plurality votes despite task complexity.
-  </p>
-
-  <h3>Participant Management</h3>
+  <p><strong>Participant management:</strong></p>
   <ul>
-    <li>250 participants via Prolific (native English speakers)</li>
+    <li>Recruited 250 participants via Prolific (native English speakers, normal vision)</li>
     <li>Compensation: £1.47 per task, average £8.82/hour</li>
     <li>Each participant completed ~32 questions on average</li>
+    <li>Total annotations: thousands of individual votes aggregating to 1,592 alignments</li>
   </ul>
 
-  <h2>Disagreement Analysis</h2>
-  <p>I manually classified 100 cases with no initial majority:</p>
+  <p><strong>Quality control and validation:</strong></p>
   <ul>
-    <li><strong>26% Many-to-one alignments:</strong> Different granularity levels across recipes</li>
-    <li><strong>24% Implicit actions:</strong> Actions inferred from context</li>
-    <li><strong>22% Light verbs:</strong> "let rest" vs "allow to stand" ambiguity</li>
-    <li><strong>17% No best alignment:</strong> Genuinely no good correspondence</li>
+    <li><strong>Agreement analysis:</strong> 69.3% of individual votes agreed with final plurality annotation, indicating task difficulty</li>
+    <li><strong>Human performance benchmark:</strong> Subset of authors achieved 79% accuracy on manually annotated test set</li>
+    <li><strong>Majority baseline:</strong> 31.3% (always selecting "None"), confirming task is non-trivial</li>
+    <li><strong>Filtering:</strong> Excluded incomplete responses and statistical outliers (&gt;3 standard deviations)</li>
   </ul>
+
+  <h3>Phase 3: Disagreement analysis and insights</h3>
+  <p>Manually classified 100 cases with no initial majority to understand annotation challenges:</p>
+  <ul>
+    <li><strong>Many-to-one alignments (26%):</strong> Individual actions in one recipe comprise complex action in another (e.g., "add milk," "add butter," "add vanilla" in recipe A vs. single "add wet ingredients" in recipe B)</li>
+    <li><strong>Implicit actions (24%):</strong> Actions inferred from context or implied by ingredients ("crushed garlic" implies crushing action; "return to cooker" after previous "remove" implies baking)</li>
+    <li><strong>Light verbs and causatives (22%):</strong> Sequences like "let rest" vs "allow to stand" vs "let dough rest" tagged inconsistently, causing alignment ambiguity</li>
+    <li><strong>No best alignment (17%):</strong> Some actions genuinely have no good correspondence</li>
+    <li><strong>One-to-many alignments (6%):</strong> Less common due to long-to-short pairing strategy</li>
+    <li><strong>Other (5%):</strong> Typos, mistagging, negative/conditional events</li>
+  </ul>
+  <p>This analysis revealed that 70% of recipes contain repeated action words (e.g., multiple instances of "add") that refer to different cooking steps, requiring contextual understanding for correct alignment.</p>
+
+  <h3>Phase 4: Neural alignment model</h3>
+  <p>Built two-block architecture treating alignment as assignment problem</p>
+
+  <p><strong>Encoder:</strong> Generates encoding for each action</p>
+  <ul>
+    <li>Base: LSTM over BERT token embeddings for action text</li>
+    <li>Extended: Concatenates base encoding with LSTM encodings of parent and child actions from recipe graph structure</li>
+  </ul>
+
+  <p><strong>Scorer:</strong> Multi-layer perceptron computing alignment scores using element-wise product of source and target encodings</p>
+
+  <p>Trained with cross-entropy loss using 10-fold cross-validation by dish (always evaluating on unseen cuisine).</p>
+
+  <h2>Key Challenge</h2>
+  <p><strong>Enabling accurate human annotation of fine-grained action correspondences</strong></p>
+  <p>
+    Recipe actions are embedded within complex sentences containing multiple ingredients, tools, and procedural steps. Annotators must identify correspondences between specific verbs across recipes while considering full recipe context—a cognitively demanding task. Standard text-based interfaces lead to annotator confusion when recipes contain repeated action words (e.g., multiple instances of "add" or "mix" referring to different cooking steps), which occurred in 70% of our recipes.
+  </p>
+  <p><strong>Solution:</strong></p>
+  <p>
+    Novel UI design with visual attention management, developed through several pilot studies. We implemented a color-coded interface where every action in both recipes was bolded and assigned a unique color, making it instantly visually distinguishable. Both recipes remained visible simultaneously, allowing annotators to maintain context while focusing on specific actions. We presented only 2 source actions at a time to limit cognitive load, and the color coding eliminated ambiguity when multiple identical verbs appeared in the same recipe. This design enabled annotators to maintain 69.3% agreement with plurality votes across 1,592 action pairs, despite the task's inherent complexity.
+  </p>
 
   <h2>Results</h2>
+  <p><strong>Recipe parsing performance:</strong></p>
+  <ul>
+    <li><strong>89.6 F1</strong> Action tagging (matching inter-annotator agreement)</li>
+    <li><strong>78.2 F1</strong> Graph parsing (gold tags)</li>
+    <li><strong>72.3 F1</strong> End-to-end parsing (raw text)</li>
+  </ul>
+  <p>Set new state-of-the-art on Yamakata et al. benchmark, with 7+ point improvement over previous work.</p>
+
+  <p><strong>Action alignment performance:</strong></p>
   <table>
     <thead>
       <tr>
@@ -78,21 +156,44 @@ const baseUrl = import.meta.env.BASE_URL;
     </thead>
     <tbody>
       <tr>
+        <td>Human upper bound</td>
+        <td>79.0%</td>
+      </tr>
+      <tr>
+        <td>Sequential ordering baseline</td>
+        <td>16.5%</td>
+      </tr>
+      <tr>
         <td>Cosine similarity baseline</td>
         <td>41.5%</td>
       </tr>
       <tr>
-        <td>Text-only model</td>
+        <td>Common action pairs baseline</td>
+        <td>52.1%</td>
+      </tr>
+      <tr>
+        <td>Our model (base - text only)</td>
         <td>66.3%</td>
       </tr>
       <tr>
-        <td><strong>With graph structure</strong></td>
+        <td><strong>Our model (extended - with graph structure)</strong></td>
         <td><strong>72.4%</strong></td>
-      </tr>
-      <tr>
-        <td>Human upper bound</td>
-        <td>79.0%</td>
       </tr>
     </tbody>
   </table>
+
+  <h2>Key findings</h2>
+  <p><strong>Data collection insights:</strong> The iterative voting methodology successfully identified difficult cases requiring expert attention (12% of alignments), while efficiently processing straightforward alignments. Agreement distribution showed bimodal pattern: many questions achieved 80-100% agreement, while others required 5-6 votes to establish plurality, validating the adaptive approach.</p>
+
+  <p><strong>Structural information matters:</strong> Incorporating parent and child action nodes from recipe graphs improved accuracy by 6.1 points (66.3% → 72.4%), demonstrating that procedural context is essential for understanding action correspondences. This validates the investment in building the recipe parser.</p>
+
+  <p><strong>Complexity of recipe interpretation:</strong> The disagreement analysis quantified specific linguistic phenomena causing alignment ambiguity. The finding that 26% of disagreements stem from many-to-one alignments (where different recipes use different granularities) has implications for recipe recommendation and instructional systems.</p>
+
+  <p><strong>Cross-domain generalization:</strong> 10-fold cross-validation by dish (training on 9 cuisines, testing on 1 unseen cuisine) demonstrates the model generalizes across culinary domains rather than memorizing dish-specific patterns.</p>
+
+  <p><strong>Corpus statistics:</strong> Average of 15.1 actions per recipe (vs 8 sentences in previous work), confirming that action-level annotation captures substantially more fine-grained information. 70% of recipes contain repeated action verbs that refer to different cooking steps, illustrating why surface-level matching fails.</p>
+
+  <p><strong>Comparison to sentence-level alignment:</strong> Previous work achieved 54.6 F1 for sentence-level text-to-text alignment, suggesting action-level alignment may be harder to annotate but easier to model automatically once structural information is available.</p>
+
+  <p><strong>Practical applicability:</strong> The model achieved 69.8% accuracy aligning long-to-short recipes, validating that the data collection strategy produces bidirectionally useful alignments despite being collected in one direction.</p>
 </ProjectLayout>

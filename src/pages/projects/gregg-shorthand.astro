@@ -2,9 +2,9 @@
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 const project = {
-  title: "Gregg Shorthand Recognition",
-  description: "Deep learning system for recognizing English words from Gregg shorthand images.",
-  tags: ["Image to Text", "CNN/LSTM", "Retrieval", "Dataset Construction"],
+  title: "Optical Gregg Shorthand Recognition",
+  description: "Image to text generation | Hand script recognition | Retrieval | CV & NLP",
+  tags: ["Image to Text", "CNN", "LSTM", "GRU", "Retrieval", "Dataset Construction"],
 };
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -15,79 +15,84 @@ const baseUrl = import.meta.env.BASE_URL;
     <a href="https://link.springer.com/chapter/10.1007/978-3-030-00794-2_24" target="_blank" rel="noopener noreferrer">Published at TSD 2018</a>
   </p>
 
+  <img src={`${baseUrl}images/gregg0.png`} alt="Gregg Shorthand Overview" />
+
+  <h2>Introduction</h2>
+  <p>
+    Gregg shorthand is the most widely used form of pen stenography in the United States, capable of reaching writing speeds of 200 words per minute. Despite the prevalence of electronic devices, shorthand remains in use today due to its unique advantages. However, automatically recognizing these hand-written scripts presents significant technical challenges due to their extremely concise and subtle visual encoding.
+  </p>
+  <p>
+    This project developed the first substantial corpus for optical Gregg shorthand recognition and created a novel neural architecture that treats the problem as an information retrieval task rather than simple classification, achieving 35% accuracy on a vocabulary of over 15,000 English words.
+  </p>
+
+  <h2>Project Overview</h2>
+  <p>
+    The system recognizes English words from their Gregg shorthand script images. The key innovation is reformulating word-level shorthand recognition as a hybrid task: generating character sequences from visual features, then retrieving the best-matching word from a vocabulary. This approach addresses the impracticality of treating recognition as multi-class classification with potentially tens of thousands of categories.
+  </p>
+
+  <p><strong>Key challenge:</strong></p>
+  <p>
+    Shorthand encodes multiple characters in tiny regions through subtle variations in stroke direction, size, and orientation. Images vary dramatically in size and shape (smallest being ~1% the size of the largest), and cannot be augmented through standard rotation or scaling without losing critical information.
+  </p>
+
+  <p><strong>Technical approach:</strong></p>
+  <p>
+    A three-stage pipeline consisting of (1) CNN-based feature extraction from shorthand images, (2) bidirectional sequence generation using LSTM/GRU networks, and (3) custom word retrieval using weighted similarity metrics including Levenshtein distance and a novel bi-directional BLEU score.
+  </p>
+
+  <p><strong>Technologies:</strong> Keras, CNN, LSTM/GRU, Custom NLP metrics</p>
+
+  <h2>Methodology</h2>
+
   <img src={`${baseUrl}images/gregg1.png`} alt="Gregg Shorthand Recognition Pipeline" />
 
-  <h2>Overview</h2>
+  <p><strong>Corpus development:</strong></p>
   <p>
-    Gregg shorthand is the most widely used form of pen stenography in the United States, capable of reaching writing speeds of 200 words per minute. Despite the prevalence of electronic devices, shorthand remains in use today due to its unique advantages.
-  </p>
-  <p>
-    Automatically recognizing these hand-written scripts presents significant technical challenges due to their extremely concise and subtle visual encoding. This project developed the <strong>first substantial corpus for optical Gregg shorthand recognition</strong> and created a novel neural architecture achieving 58% top-5 accuracy on a vocabulary of over 15,000 English words.
+    Built Gregg-1916, comprising 15,711 images of shorthand scripts with corresponding English word labels, extracted from the 1916 Gregg Shorthand Dictionary at 150 ppi resolution. This represents the first publicly available corpus of considerable scale for optical shorthand recognition research.
   </p>
 
-  <h2>Impact</h2>
-  <ul>
-    <li>Created <strong>Gregg-1916 corpus</strong>: 15,711 shorthand images with English word labels</li>
-    <li><strong>34.9% top-1 accuracy</strong> on 15K+ word vocabulary</li>
-    <li><strong>58.0% top-5 accuracy</strong></li>
-    <li>First publicly available corpus for optical shorthand recognition</li>
-  </ul>
-
-  <h2>Key Challenge</h2>
-  <p>
-    Shorthand encodes multiple characters in tiny regions through subtle variations in stroke direction, size, and orientation. Images vary dramatically in size (smallest ~1% the size of largest) and cannot be augmented through standard rotation or scaling without losing critical information.
-  </p>
-
-  <h2>Technical Approach</h2>
-  <p>
-    The key innovation is reformulating word-level shorthand recognition as a <strong>hybrid task</strong>: generating character sequences from visual features, then retrieving the best-matching word from a vocabulary.
-  </p>
-
-  <h3>Three-Stage Pipeline</h3>
+  <h3>Architecture design</h3>
+  <p>The system operates in three stages:</p>
   <ol>
-    <li><strong>Feature extraction:</strong> 10-layer CNN with batch normalization extracts visual features from variable-sized shorthand images</li>
-    <li><strong>Bidirectional sequence generation:</strong> Two recurrent networks (forward and backward) generate character sequences, addressing performance decay across the sequence</li>
-    <li><strong>Word retrieval:</strong> Custom retrieval module ranks vocabulary words using weighted combinations of Levenshtein distance and a novel bi-directional BLEU score</li>
+    <li><strong>Feature extraction:</strong> A 10-layer convolutional network with batch normalization extracts visual features from variable-sized shorthand images. The feature extractor achieved 90% accuracy on a binary letter-existence classification task (chance level: 75%), demonstrating its ability to capture relevant visual information.</li>
+    <li><strong>Sequence generation:</strong> Two recurrent networks (one forward, one backward) generate character sequences from the image features. The bidirectional approach addresses a critical issue: single-direction decoders exhibit performance decay across the sequence (accuracy drops from 95% for the first character to 64% average). The backward decoder provides reliable predictions for the end of words, while the forward decoder excels at the beginning.</li>
+    <li><strong>Word retrieval:</strong> A custom retrieval module ranks vocabulary words by similarity to both generated hypotheses using weighted combinations of:
+      <ul>
+        <li>Normalized Levenshtein distance (editorial similarity)</li>
+        <li>Bi-directional BLEU score (novel metric giving higher weight to reliable portions of each hypothesis)</li>
+        <li>Standard BLEU n-gram overlap metrics</li>
+      </ul>
+    </li>
   </ol>
 
-  <h3>Why Bidirectional?</h3>
-  <p>
-    Single-direction decoders exhibit severe performance decay: accuracy drops from 95% for the first character to 64% average. The backward decoder provides reliable predictions for word endings, while the forward decoder excels at beginnings.
-  </p>
+  <p><strong>Data handling:</strong> Conservative augmentation was applied (2° rotation, 96% scaling only) due to the information-critical nature of stroke angles and sizes. Dataset split: 90% training, 5% validation, 5% test.</p>
 
   <h2>Results</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Metric</th>
-        <th>Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Top-1 Retrieval Accuracy</td>
-        <td>34.9%</td>
-      </tr>
-      <tr>
-        <td>Top-5 Retrieval Accuracy</td>
-        <td>58.0%</td>
-      </tr>
-      <tr>
-        <td>Editorial Similarity</td>
-        <td>64.4%</td>
-      </tr>
-      <tr>
-        <td>Raw Sequence Generation</td>
-        <td>2.7%</td>
-      </tr>
-    </tbody>
-  </table>
+  <p>The system achieved the following performance on the test set:</p>
+  <ul>
+    <li><strong>34.9%</strong> Top-1 Retrieval Accuracy</li>
+    <li><strong>58.0%</strong> Top-5 Retrieval Accuracy</li>
+    <li><strong>64.4%</strong> Editorial Similarity</li>
+  </ul>
+
+  <p>The retrieval module proved essential—raw sequence generation achieved only 2.7% accuracy, demonstrating that the hybrid approach successfully bridges the gap between imperfect sequence generation and correct word identification.</p>
+
+  <p><strong>Performance breakdown by metric:</strong></p>
+  <ul>
+    <li>BLEU-1 through BLEU-4: 0.707, 0.600, 0.546, 0.508 (using best retrieval criterion)</li>
+    <li>The novel bi-directional BLEU metric contributed meaningfully to the best-performing retrieval criterion</li>
+  </ul>
+
+  <h2>Key findings</h2>
   <p>
-    The retrieval module proved essential—raw sequence generation achieved only 2.7% accuracy, demonstrating that the hybrid approach successfully bridges the gap between imperfect sequence generation and correct word identification.
+    The bidirectional generation approach successfully addressed sequence decay, with each decoder contributing reliable predictions for different portions of words. Analysis revealed that the backward decoder's lower overall performance (43% vs 64% character accuracy) likely stems from silent letters appearing more frequently at word endings—these letters appear in spelling but not in pronunciation-based shorthand scripts.
+  </p>
+  <p>
+    Error analysis showed that retrieval failures often involved words with similar pronunciation patterns, indicating that incorporating phonetic information (which shorthand is designed to encode) could substantially improve performance.
   </p>
 
-  <h2>Key Findings</h2>
+  <p><strong>Contribution to the field:</strong></p>
   <p>
-    Error analysis showed that retrieval failures often involved words with similar pronunciation patterns. Since shorthand is designed to encode pronunciation rather than spelling, incorporating phonetic information could substantially improve future performance.
+    This work establishes the first word-level optical shorthand recognition at scale, demonstrating that the task is tractable and providing a foundation for future research. The corpus and code were made publicly available to enable further development.
   </p>
 </ProjectLayout>
