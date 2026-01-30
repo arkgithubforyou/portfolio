@@ -19,7 +19,7 @@ const baseUrl = import.meta.env.BASE_URL;
 
   <h2>Overview</h2>
   <p>
-    Automatically generated text should be both coherent and engaging, but most language models face a fundamental trade-off: they either produce generic, boring content or lose coherence when trying to add detail. This project solved this problem by developing a production-ready neural architecture that generates engaging, detailed narratives while maintaining global coherence.
+    Automatically generated text should be both coherent and engaging, but most language models face a fundamental trade-off: they either produce generic, boring content or lose coherence when trying to add detail. This project solved this problem by developing a production-ready neural architecture that generates engaging, detailed narratives while maintaining global coherence. We also developed evaluation infrastructure for comprehensive human evaluation pipeline using LingoTurk and Prolific, managing 400+ crowdsourcing sessions with statistical quality control and inter-rater reliability analysis.
   </p>
 
   <h2>Impact</h2>
@@ -31,13 +31,39 @@ const baseUrl = import.meta.env.BASE_URL;
     <li>Results validated through rigorous human evaluation (200 stories, 1,221 ratings)</li>
   </ul>
 
-  <h2>Technical Approach</h2>
+  <h2>Approach</h2>
   <p>The system uses a multi-task learning framework with three key components:</p>
   <ul>
     <li><strong>Agenda-aware encoder:</strong> Bi-LSTM that tracks generation progress through the planned narrative structure</li>
     <li><strong>Dual decoders:</strong> Separate decoders for structural content (main events) and enrichment content (engaging details)</li>
     <li><strong>Maximum Mutual Information objective:</strong> Anti-generic decoding that penalizes common phrases and promotes specific, contextually relevant content</li>
   </ul>
+
+  <p>The human evaluation pipeline</p>
+  <ul>
+    <li><strong>Experimental design:</strong> A multi-criteria evaluation framework covering syntax, global coherence (inclusion, order, relevance), local coherence, and informativeness using 1-4 Likert scales, plus agenda coverage assessment</li>
+    <li><strong>Platform development:</strong> Implemented the evaluation interface using LingoTurk, a custom psycholinguistics crowdsourcing platform</li>
+    <li><strong>Quality control pipeline:</strong> 
+	<ul>
+		<li>Piloted evaluation protocol to refine questions and ensure clarity.</li>
+		<li>Implemented automatic filtering of incomplete responses and statistical outliers (>3 standard deviations).</li>
+		<li>Restricted to native English speakers only.</li>
+		<li>Collected 10+ independent ratings per story for statistical reliability.</li>
+	</ul>
+	
+
+
+</li>
+<li><strong>Data collection management:</strong> 
+	<ul>
+		<li>Recruited and managed ~400 participant sessions via Prolific, with appropriate compensation (£1.5 per task, ~£7/hour).</li>
+		<li>Evaluated 200 stories total (4 stories × 10 scenarios × 5 systems), resulting in 1,221 valid evaluation responses after quality filtering.</li>
+	</ul>
+	 </li>
+<li><strong>Statistical validation:</strong> Performed inter-rater reliability analysis (Fleiss' kappa = 0.34 for agenda coverage), paired t-tests for significance testing (α = 0.05), and correlation analysis with automatic metrics</li>
+  </ul>
+
+	
 
   <h2>Key Challenges Solved</h2>
   <h3>Evaluating Generated Story Quality</h3>
