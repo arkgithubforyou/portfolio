@@ -3,8 +3,8 @@ import ProjectLayout from '../../layouts/ProjectLayout.astro';
 
 const project = {
   title: "Controlled Story Generation",
-  description: "Pytorch/AllenNLP | Attention | Text Generation | Pre-trained vectors | Published at COLING",
-  tags: ["PyTorch", "AllenNLP", "Attention", "Text Generation", "Pre-trained vectors"],
+  description: "Multi-task neural architecture for controlled text generation with rich details.",
+  tags: ["PyTorch", "Text Generation", "Attention", "Crowdsourcing"],
 };
 
 const baseUrl = import.meta.env.BASE_URL;
@@ -17,188 +17,89 @@ const baseUrl = import.meta.env.BASE_URL;
 
   <img src={`${baseUrl}images/story0.png`} alt="Story Generation Architecture" />
 
-  <h2>Introduction</h2>
+  <h2>Overview</h2>
   <p>
-    Automatically generated text should be both coherent and engaging, but most language models face a fundamental trade-off: they either produce generic, boring content or lose coherence when trying to add detail. This is a critical challenge for real-world applications like content generation, creative writing assistance, and conversational AI.
-  </p>
-  <p>
-    This project solved this problem by developing a production-ready neural architecture that generates engaging, detailed narratives while maintaining global coherence. The system achieved a 34% improvement in informativeness over baseline methods, demonstrating that controlled content generation at scale is achievable even with limited training data (~1,000 stories).
+    Automatically generated text should be both coherent and engaging, but most language models face a fundamental trade-off: they either produce generic, boring content or lose coherence when trying to add detail. This project solved this problem by developing a production-ready neural architecture that generates engaging, detailed narratives while maintaining global coherence. We also developed evaluation infrastructure for comprehensive human evaluation pipeline using LingoTurk and Prolific, managing 400+ crowdsourcing sessions with statistical quality control and inter-rater reliability analysis.
   </p>
 
-  <h2>Project Overview</h2>
-  <p><strong>Problem:</strong></p>
-  <p>
-    Generic AI-generated content fails to engage users. Existing neural language models either produce coherent but boring text, or generate interesting details at the cost of losing narrative structure.
-  </p>
-
-  <p><strong>Solution:</strong></p>
-  <p>
-    A dual-decoder architecture that separates the generation of structural content (main story line) from enrichment content (engaging details), allowing independent optimization of both coherence and informativeness.
-  </p>
-
-  <p><strong>Impact:</strong></p>
+  <h2>Impact</h2>
   <ul>
-    <li>34% improvement in content informativeness over state-of-the-art baseline</li>
+    <li><strong>34% improvement</strong> in content informativeness over state-of-the-art baseline</li>
+    <li><strong>90% data reduction</strong> through strategic use of pre-trained embeddings</li>
     <li>Maintained global coherence (0.49 vs 0.40 baseline)</li>
-    <li>Works with small datasets (234k tokens) through strategic use of pre-trained embeddings</li>
-    <li>Generation speed: 8 tokens/second on single GPU</li>
-    <li>Results validated through rigorous human evaluation (200 stories, 1,221 ratings, 10+ raters per story)</li>
+    <li>Production speed: 8 tokens/second on single GPU</li>
+    <li>Results validated through rigorous human evaluation (200 stories, 1,221 ratings)</li>
   </ul>
 
-  <p><strong>Technical approach:</strong></p>
-  <p>
-    Agenda-aware dual decoders with Maximum Mutual Information objective to suppress generic output and promote specific, contextually relevant content.
-  </p>
-
-  <h2>Key Challenges</h2>
-
-  <h3>1. Evaluating generated story quality</h3>
-  <p>
-    Automatically evaluating story quality, particularly global coherence and informativeness, is notoriously difficult. Standard metrics like BLEU or perplexity correlate poorly with human judgments of narrative quality. Coherence spans multiple sentences and requires understanding procedural knowledge, while informativeness depends on subtle differences in detail richness that automatic metrics fail to capture.
-  </p>
-  <p><strong>Solution:</strong></p>
-  <p>
-    Comprehensive human evaluation schema across multiple dimensions. We designed a multi-criteria framework assessing syntax, global coherence (inclusion, order, relevance), local coherence, and informativeness using Likert scales. Implemented via LingoTurk on Prolific with 10 native speakers rating each story, statistical quality controls (filtering outliers &gt;3 SD), and rigorous validation (paired t-tests, inter-rater reliability analysis). This provided robust, statistically significant measurements enabling reliable system comparison.
-  </p>
-
-  <h3>2. Reducing generic text generation</h3>
-  <p>
-    Neural language models tend to produce generic, high-probability text (e.g., "I got my items" instead of "I selected pasta, rice, and canned tomatoes"). The detailer component, tasked with generating contextual details, faces particular risk of defaulting to common phrases that add little meaningful information.
-  </p>
-  <p><strong>Solution:</strong></p>
-  <p>
-    Maximum Mutual Information (MMI) decoding objective for the detailer. During inference, we penalize generic language by subtracting a language model term from the generation score:
-  </p>
-  <pre><code>score = log p(text|context) - 0.1 × log p(text)</code></pre>
-  <p>
-    This anti-language model objective actively suppresses high-frequency generic phrases and promotes specific, contextually relevant details. Combined with larger beam size (100 vs 5 for outliner) to effectively exploit the MMI objective, this achieved 34% improvement in informativeness over baseline while maintaining coherence.
-  </p>
-
-  <h2>Methodology</h2>
-
-  <p><strong>Problem decomposition:</strong></p>
-  <p>
-    Rather than treating story generation as a single monolithic task, we identified that narrative writing consists of two distinct sub-tasks requiring different approaches:
-  </p>
-  <ol>
-    <li>Structural generation: maintaining narrative flow and coherence</li>
-    <li>Content enrichment: adding specific, engaging details</li>
-  </ol>
-
-  <p><strong>Architecture design:</strong></p>
+  <h2>Approach</h2>
   <p>The system uses a multi-task learning framework with three key components:</p>
-
-  <ol>
-    <li>
-      <strong>Agenda-aware encoder:</strong> Tracks generation progress through the planned narrative structure, ensuring the model knows where it is in the story at each step. Implemented as Bi-LSTM with event-token embedding concatenation.
-    </li>
-    <li>
-      <strong>Specialized decoders:</strong>
-      <ul>
-        <li><strong>Outliner:</strong> Generates structural content (main events) with attention mechanism</li>
-        <li><strong>Detailer:</strong> Generates enrichment content conditioned on surrounding context (preceding and following events)</li>
-      </ul>
-      This separation allows each component to be optimized for its specific function.
-    </li>
-    <li>
-      <strong>Anti-generic objective (MMI):</strong> During inference, penalizes generic language patterns:
-      <pre><code>score = log p(text|context) - 0.1 × log p(text)</code></pre>
-      This actively encourages the model to generate specific, meaningful content rather than defaulting to common phrases.
-    </li>
-  </ol>
-
-  <p><strong>Data efficiency strategy:</strong></p>
   <ul>
-    <li>Leveraged pre-trained GloVe embeddings (300-dim) to handle vocabulary despite small corpus</li>
-    <li>Transfer learning reduced data requirements by ~90% compared to training from scratch</li>
-    <li>Strategic architectural choices (symbolic planning + neural generation) minimized parameters requiring domain-specific training</li>
+    <li><strong>Agenda-aware encoder:</strong> Bi-LSTM that tracks generation progress through the planned narrative structure</li>
+    <li><strong>Dual decoders:</strong> Separate decoders for structural content (main events) and enrichment content (engaging details)</li>
+    <li><strong>Maximum Mutual Information objective:</strong> Anti-generic decoding that penalizes common phrases and promotes specific, contextually relevant content</li>
   </ul>
 
-  <p><strong>Optimization:</strong></p>
-  <p>Adam optimizer, dropout regularization (0.69), gradient clipping, early stopping. Total training time: ~4 hours on single Tesla V100.</p>
-
-  <img src={`${baseUrl}images/story1.png`} alt="Human Evaluation Design" />
-
-  <h3>Human evaluation design and execution</h3>
-  <p>Designed and implemented a comprehensive human evaluation pipeline to assess story quality across multiple dimensions:</p>
+  <p>The human evaluation pipeline</p>
   <ul>
-    <li><strong>Experimental design:</strong> Developed a multi-criteria evaluation framework covering syntax, global coherence (inclusion, order, relevance), local coherence, and informativeness using 1-4 Likert scales, plus agenda coverage assessment</li>
+    <li><strong>Experimental design:</strong> A multi-criteria evaluation framework covering syntax, global coherence (inclusion, order, relevance), local coherence, and informativeness using 1-4 Likert scales, plus agenda coverage assessment</li>
     <li><strong>Platform development:</strong> Implemented the evaluation interface using LingoTurk, a custom psycholinguistics crowdsourcing platform</li>
-    <li><strong>Quality control pipeline:</strong>
-      <ul>
-        <li>Piloted evaluation protocol to refine questions and ensure clarity</li>
-        <li>Implemented automatic filtering of incomplete responses and statistical outliers (&gt;3 standard deviations)</li>
-        <li>Restricted to native English speakers only</li>
-        <li>Collected 10+ independent ratings per story for statistical reliability</li>
-      </ul>
-    </li>
-    <li><strong>Data collection management:</strong> Recruited and managed ~400 participant sessions via Prolific, with appropriate compensation (£1.5 per task, ~£7/hour)</li>
-    <li><strong>Statistical validation:</strong> Performed inter-rater reliability analysis (Fleiss' kappa = 0.34 for agenda coverage), paired t-tests for significance testing (α = 0.05), and correlation analysis with automatic metrics</li>
-    <li><strong>Scale:</strong> Evaluated 200 stories total (4 stories × 10 scenarios × 5 systems), resulting in 1,221 valid evaluation responses after quality filtering</li>
+    <li><strong>Quality control pipeline:</strong> 
+	<ul>
+		<li>Piloted evaluation protocol to refine questions and ensure clarity.</li>
+		<li>Implemented automatic filtering of incomplete responses and statistical outliers (>3 standard deviations).</li>
+		<li>Restricted to native English speakers only.</li>
+		<li>Collected 10+ independent ratings per story for statistical reliability.</li>
+	</ul>
+	
+
+
+</li>
+<li><strong>Data collection management:</strong> 
+	<ul>
+		<li>Recruited and managed ~400 participant sessions via Prolific, with appropriate compensation (£1.5 per task, ~£7/hour).</li>
+		<li>Evaluated 200 stories total (4 stories × 10 scenarios × 5 systems), resulting in 1,221 valid evaluation responses after quality filtering.</li>
+	</ul>
+	 </li>
+<li><strong>Statistical validation:</strong> Performed inter-rater reliability analysis (Fleiss' kappa = 0.34 for agenda coverage), paired t-tests for significance testing (α = 0.05), and correlation analysis with automatic metrics</li>
   </ul>
-  <p>This end-to-end evaluation infrastructure provided robust, statistically significant results and could be reused for future model iterations.</p>
+
+	
+
+  <h2>Key Challenges Solved</h2>
+  <h3>Evaluating Generated Story Quality</h3>
+  <p>
+    Standard metrics like BLEU correlate poorly with human judgments of narrative quality. We designed a comprehensive human evaluation schema across multiple dimensions, implemented via LingoTurk on Prolific with 10 native speakers rating each story.
+  </p>
+
+  <h3>Reducing Generic Text Generation</h3>
+  <p>Neural language models tend to produce generic, high-probability text. We implemented MMI decoding that actively suppresses high-frequency generic phrases:</p>
+  <pre><code>score = log p(text|context) - 0.1 × log p(text)</code></pre>
 
   <h2>Results</h2>
-  <p><strong>Quantitative results</strong> (human evaluation with 10 raters per story, statistically significant at α = 0.05):</p>
-  <ul>
-    <li><strong>+34%</strong> Informativeness improvement (0.51 vs 0.38 baseline)</li>
-    <li><strong>+23%</strong> Global coherence improvement (0.49 vs 0.40 baseline)</li>
-    <li><strong>+48%</strong> Local coherence improvement (0.59 vs 0.44 baseline)</li>
-  </ul>
-
-  <p><strong>System comparison:</strong></p>
   <table>
     <thead>
       <tr>
         <th>Model</th>
         <th>Informativeness</th>
         <th>Global Coherence</th>
-        <th>Coverage</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Baseline (Zhai et al. 2019)</td>
+        <td>Baseline</td>
         <td>0.38</td>
         <td>0.40</td>
-        <td>66%</td>
       </tr>
       <tr>
-        <td>Single decoder (ablation)</td>
-        <td>0.47</td>
-        <td>0.42</td>
-        <td>57%</td>
-      </tr>
-      <tr>
-        <td><strong>Full model (dual decoder)</strong></td>
+        <td><strong>Our Model</strong></td>
         <td><strong>0.51</strong></td>
         <td><strong>0.49</strong></td>
-        <td><strong>63%</strong></td>
       </tr>
       <tr>
         <td>Human (upper bound)</td>
         <td>0.66</td>
         <td>0.66</td>
-        <td>86%</td>
       </tr>
     </tbody>
   </table>
-
-  <p><strong>Key findings:</strong></p>
-  <p>
-    <strong>Architectural validation:</strong> Ablation study confirmed that the dual-decoder design is essential—removing it caused 8% performance drop in informativeness, demonstrating the value of the architectural innovation beyond incremental improvements.
-  </p>
-  <p><strong>Production considerations:</strong> The system handles real-world constraints effectively:</p>
-  <ul>
-    <li>Small training data (234k tokens) through transfer learning</li>
-    <li>Fast inference (8 tokens/second) suitable for interactive applications</li>
-    <li>Controllable output via explicit agenda manipulation</li>
-    <li>Minimal hallucination due to structured generation process</li>
-  </ul>
-  <p>
-    <strong>Scalability potential:</strong> The approach generalizes to any domain where content can be decomposed into structure + detail (product descriptions, documentation, educational content, etc.). The use of event representations means the method isn't tied to one specific corpus format.
-  </p>
-  <p>
-    <strong>Limitations identified:</strong> Generated content tends toward brevity compared to human writing. This is addressable through elaboration control mechanisms in future iterations—a clear path for productionization improvements.
-  </p>
 </ProjectLayout>
